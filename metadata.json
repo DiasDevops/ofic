@@ -1,0 +1,6 @@
+{
+  "name": "Jomano Oficina e Auto Center",
+  "description": "Aplicativo de agendamento, acompanhamento em tempo real do progresso do veículo e histórico completo de manutenções da Jomano Oficina e Auto Center.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
