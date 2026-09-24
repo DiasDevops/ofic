@@ -57,7 +57,8 @@ export interface ServiceItem {
   vehiclePhoto: string;
   vehicleBadge: string;
   estimatedDuration: string;
-  startingPrice: number;
+  startingPrice?: number | null;
+  displayPrice: string;
   warranty: string;
   isSpotlight?: boolean;
 }
@@ -111,4 +112,22 @@ export interface EnginePartHighlight {
   precisionDetail: string;
   tolerance: string;
   inspectionType: string;
+}
+
+export interface MaintenanceTip {
+  id: string;
+  category: 'pneus' | 'oleo' | 'freios' | 'motor' | 'arrefecimento' | 'eletrica';
+  categoryLabel: string;
+  title: string;
+  frequency: string;
+  shortAdvice: string;
+  fullExplanation: string;
+  riskIfIgnored: string;
+  proTip: string;
+  relatedServiceId?: string;
+  relatedServiceTitle?: string;
+  accentColor: string;
+  badgeBg: string;
+  borderColor: string;
+  iconName: 'disc' | 'droplet' | 'wrench' | 'shield' | 'flame' | 'zap' | 'gauge';
 }

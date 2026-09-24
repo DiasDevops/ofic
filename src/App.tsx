@@ -10,10 +10,12 @@ import {
   INITIAL_NOTIFICATIONS, 
   INITIAL_REPAIR_HISTORY, 
   SHOP_CONTACT_INFO,
-  MAINTENANCE_STEPS 
+  MAINTENANCE_STEPS,
+  DIVERSIFIED_SERVICES
 } from './data/mockData';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
+import { StorefrontBanner } from './components/StorefrontBanner';
 import { EngineWorkbenchSpotlight } from './components/EngineWorkbenchSpotlight';
 import { LiveVehicleTracker } from './components/LiveVehicleTracker';
 import { ServicesGrid } from './components/ServicesGrid';
@@ -21,12 +23,14 @@ import { RepairHistory } from './components/RepairHistory';
 import { BookingModal } from './components/BookingModal';
 import { QuickSupportModal, FloatingSupportButton } from './components/QuickSupportModal';
 import { NotificationToast } from './components/NotificationToast';
+import { MaintenanceTipsSection } from './components/MaintenanceTipsSection';
+import { PeriodicTipTicker } from './components/PeriodicTipTicker';
 import { Footer } from './components/Footer';
 
 export default function App() {
   // Application persistent state
   const [vehicles, setVehicles] = useState<VehicleOrder[]>(() => {
-    const saved = localStorage.getItem('jomano_vehicles');
+    const saved = localStorage.getItem('jomano_vehicles_v3');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -42,7 +46,7 @@ export default function App() {
   });
 
   const [notifications, setNotifications] = useState<AppNotification[]>(() => {
-    const saved = localStorage.getItem('jomano_notifications');
+    const saved = localStorage.getItem('jomano_notifications_v3');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -63,16 +67,16 @@ export default function App() {
   const [supportActiveVehicle, setSupportActiveVehicle] = useState<VehicleOrder | null>(null);
 
   // Active section for navigation
-  const [activeSection, setActiveSection] = useState('tracker');
+  const [activeSection, setActiveSection] = useState('promos');
 
   // Save vehicles state to local storage
   useEffect(() => {
-    localStorage.setItem('jomano_vehicles', JSON.stringify(vehicles));
+    localStorage.setItem('jomano_vehicles_v3', JSON.stringify(vehicles));
   }, [vehicles]);
 
   // Save notifications
   useEffect(() => {
-    localStorage.setItem('jomano_notifications', JSON.stringify(notifications));
+    localStorage.setItem('jomano_notifications_v3', JSON.stringify(notifications));
   }, [notifications]);
 
   // Auto-dismiss toast
@@ -127,19 +131,19 @@ export default function App() {
 
         if (nextStage === 'checkin') {
           newProgress = 15;
-          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Novo ciclo de vistoria iniciado.`;
+          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Vistoria e check-in no pátio Vicente de Carvalho, 730 reiniciados.`;
         } else if (nextStage === 'diagnostico') {
           newProgress = 40;
-          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Scanner OBD2 e ensaio técnico concluídos. Orçamento em aprovação.`;
+          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Rampa de alinhamento 3D e scanner OBD2 concluídos com sucesso.`;
         } else if (nextStage === 'execucao') {
-          newProgress = 72;
-          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Serviços mecânicos e montagem de precisão na bancada em andamento.`;
+          newProgress = 70;
+          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Manutenção mecânica e alinhamento/balanceamento em execução no elevador.`;
         } else if (nextStage === 'testes') {
           newProgress = 90;
-          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Teste de rodagem e calibração computadorizada iniciados.`;
+          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Teste de rodagem e controle de vibração 100% calibrado.`;
         } else if (nextStage === 'pronto') {
           newProgress = 100;
-          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Veículo 100% finalizado! Lavagem de cortesia feita e pronto para retirada.`;
+          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Veículo 100% finalizado! Pronto para retirada na Av. Vicente de Carvalho, 730.`;
         }
 
         const stepObj = MAINTENANCE_STEPS.find((s) => s.id === nextStage);
@@ -149,7 +153,7 @@ export default function App() {
         dispatchAutomaticNotification(
           nextStage === 'pronto' ? `🎉 Veículo Pronto! (${order.plate})` : `Status Atualizado (${order.plate})`,
           nextStage === 'pronto'
-            ? `Seu veículo ${order.vehicleModel} está pronto para retirada na Jomano! Chaves na recepção.`
+            ? `Seu veículo ${order.vehicleModel} está pronto para retirada na Jomano! Chaves na recepção da Av. Vicente de Carvalho, 730.`
             : `O veículo ${order.vehicleModel} avançou para: ${stepLabel}. ${newNote}`,
           nextStage === 'pronto' ? 'ready' : 'status_change',
           order.id
@@ -173,7 +177,7 @@ export default function App() {
 
     dispatchAutomaticNotification(
       `Novo Agendamento Confirmado (${newOrder.plate})`,
-      `Sua Ordem de Serviço ${newOrder.id} foi gerada com sucesso para ${newOrder.vehicleModel}. Você já pode acompanhar em tempo real!`,
+      `Sua Ordem de Serviço ${newOrder.id} foi gerada com sucesso para ${newOrder.vehicleModel}. Você já pode acompanhar em tempo real no pátio Vicente de Carvalho!`,
       'info',
       newOrder.id
     );
@@ -189,6 +193,8 @@ export default function App() {
   const handleNavigate = (sectionId: string) => {
     setActiveSection(sectionId);
     let targetEl: HTMLElement | null = null;
+    if (sectionId === 'promos') targetEl = document.getElementById('promos-section');
+    if (sectionId === 'tips') targetEl = document.getElementById('maintenance-tips-section');
     if (sectionId === 'tracker') targetEl = document.getElementById('tracker-section');
     if (sectionId === 'engine-bench') targetEl = document.getElementById('engine-bench-section');
     if (sectionId === 'services') targetEl = document.getElementById('services-section');
@@ -199,17 +205,31 @@ export default function App() {
     }
   };
 
+  const handleOpenBookingWithPromo = (promoTitle?: string) => {
+    if (promoTitle) {
+      // Find matching service
+      const matched = DIVERSIFIED_SERVICES.find((s) =>
+        s.title.toLowerCase().includes(promoTitle.toLowerCase()) ||
+        promoTitle.toLowerCase().includes(s.title.toLowerCase())
+      );
+      setPreSelectedServiceId(matched ? matched.id : DIVERSIFIED_SERVICES[0].id);
+    } else {
+      setPreSelectedServiceId(undefined);
+    }
+    setIsBookingOpen(true);
+  };
+
   const currentVehicleObj = vehicles.find((v) => v.id === selectedVehicleId) || vehicles[0];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans selection:bg-red-600 selection:text-white">
       {/* Real-time Toast Notifications */}
       <NotificationToast
         toast={activeToast}
         onDismiss={() => setActiveToast(null)}
       />
 
-      {/* Main Header */}
+      {/* Main Header with Official Store Identity */}
       <Header
         notifications={notifications}
         onMarkNotificationsAsRead={handleMarkNotificationsAsRead}
@@ -217,32 +237,31 @@ export default function App() {
           setSupportActiveVehicle(currentVehicleObj);
           setIsQuickSupportOpen(true);
         }}
-        onOpenBooking={() => {
-          setPreSelectedServiceId(undefined);
-          setIsBookingOpen(true);
-        }}
+        onOpenBooking={() => handleOpenBookingWithPromo()}
         activeSection={activeSection}
         onNavigate={handleNavigate}
       />
 
       {/* Main Content Area */}
       <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-14 flex-1">
-        {/* 1. Hero Section */}
+        {/* 1. Hero Section with Vivid Daylight Styling */}
         <HeroSection
-          onOpenBooking={() => {
-            setPreSelectedServiceId(undefined);
-            setIsBookingOpen(true);
-          }}
+          onOpenBooking={() => handleOpenBookingWithPromo()}
           onScrollToTracker={() => handleNavigate('tracker')}
           onScrollToEngineBench={() => handleNavigate('engine-bench')}
+          onScrollToPromos={() => handleNavigate('promos')}
         />
 
-        {/* 2. DIFERENCIAL EM DESTAQUE: Motor Desmontado na Bancada */}
-        <EngineWorkbenchSpotlight
-          onScheduleEngineService={() => {
-            setPreSelectedServiceId('srv-motor');
-            setIsBookingOpen(true);
-          }}
+        {/* 2. Storefront Banner inspired by the uploaded physical store facade */}
+        <div id="promos-section">
+          <StorefrontBanner
+            onScheduleService={(promoTitle) => handleOpenBookingWithPromo(promoTitle)}
+          />
+        </div>
+
+        {/* 2.5 DICAS DE MANUTENÇÃO PREVENTIVA (Cards Rotativos Educativos) */}
+        <MaintenanceTipsSection
+          onScheduleServiceWithTitle={(title) => handleOpenBookingWithPromo(title)}
         />
 
         {/* 3. ACOMPANHAMENTO EM TEMPO REAL: Vehicle Live Tracker */}
@@ -257,7 +276,15 @@ export default function App() {
           }}
         />
 
-        {/* 4. SERVIÇOS DIVERSIFICADOS: Catalog with vehicle photos on cards */}
+        {/* 4. DIFERENCIAL EM DESTAQUE: Motor Desmontado na Bancada */}
+        <EngineWorkbenchSpotlight
+          onScheduleEngineService={() => {
+            setPreSelectedServiceId('srv-motor');
+            setIsBookingOpen(true);
+          }}
+        />
+
+        {/* 5. SERVIÇOS DIVERSIFICADOS: Alinhamento de pneus, balanceamento roda ferro, óleos & catálogo */}
         <ServicesGrid
           onSelectServiceToBook={(serviceId) => {
             setPreSelectedServiceId(serviceId);
@@ -265,15 +292,20 @@ export default function App() {
           }}
         />
 
-        {/* 5. HISTÓRICO COMPLETO DE REPAROS: Intuitive vehicle log, receipts & warranties */}
+        {/* 6. HISTÓRICO COMPLETO DE REPAROS: Digital Log, Receipts & Warranties */}
         <RepairHistory
           historyRecords={repairHistory}
-          onOpenBookingForVehicle={(plate, model) => {
+          onOpenBookingForVehicle={() => {
             setPreSelectedServiceId(undefined);
             setIsBookingOpen(true);
           }}
         />
       </main>
+
+      {/* Periodic Floating Tip Ticker for continuous education */}
+      <PeriodicTipTicker
+        onScrollToTips={() => handleNavigate('tips')}
+      />
 
       {/* Floating Action Button for Immediate Quick Support */}
       <FloatingSupportButton
@@ -304,10 +336,7 @@ export default function App() {
           setSupportActiveVehicle(currentVehicleObj);
           setIsQuickSupportOpen(true);
         }}
-        onOpenBooking={() => {
-          setPreSelectedServiceId(undefined);
-          setIsBookingOpen(true);
-        }}
+        onOpenBooking={() => handleOpenBookingWithPromo()}
       />
     </div>
   );

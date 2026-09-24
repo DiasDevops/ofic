@@ -3,14 +3,14 @@ import {
   X, 
   Calendar, 
   Clock, 
-  Wrench, 
   Car, 
   Phone, 
   Mail, 
   CheckCircle2, 
   ArrowRight,
   ShieldCheck,
-  Send
+  Send,
+  MapPin
 } from 'lucide-react';
 import { DIVERSIFIED_SERVICES, SHOP_CONTACT_INFO } from '../data/mockData';
 import { BookingFormState, VehicleOrder } from '../types';
@@ -32,7 +32,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     ownerName: '',
     ownerPhone: '',
     ownerEmail: '',
-    vehicleBrand: 'Toyota',
+    vehicleBrand: 'Chevrolet',
     vehicleModel: '',
     vehiclePlate: '',
     vehicleYear: '2022',
@@ -70,18 +70,18 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       estimatedCompletion: 'Previsão no Check-in',
       serviceRequested: selectedService.title,
       currentStage: 'checkin',
-      stageProgressPercent: 10,
+      stageProgressPercent: 15,
       mechanicInCharge: {
         name: 'Mestre Jomano Silva',
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
         specialty: 'Chefe de Oficina & Especialista em Motores',
       },
       liveNotes: [
-        `Agendamento confirmado via aplicativo para ${formData.preferredDate} às ${formData.preferredTime}.`,
-        'Box reservado e equipe técnica notificada.',
+        `Agendamento confirmado para o pátio Av. Vicente de Carvalho, 730 (${formData.preferredDate} às ${formData.preferredTime}).`,
+        'Box de atendimento reservado na rampa/elevador.',
       ],
       partsList: [],
-      totalEstimate: selectedService.startingPrice,
+      totalEstimate: selectedService.startingPrice || 0,
       isEngineTeardownJob: selectedService.category === 'motor',
     };
 
@@ -95,12 +95,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 animate-in fade-in">
-      <div className="relative w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-3xl border border-slate-800 bg-slate-900 p-6 sm:p-8 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in">
+      <div className="relative w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-2xl">
         {/* Close Button */}
         <button
           onClick={handleResetAndClose}
-          className="absolute top-5 right-5 rounded-xl border border-slate-800 bg-slate-800/80 p-2 text-slate-400 hover:text-white transition-colors"
+          className="absolute top-5 right-5 rounded-xl border border-slate-200 bg-slate-100 p-2 text-slate-500 hover:text-slate-900 transition-colors"
         >
           <X className="h-5 w-5" />
         </button>
@@ -108,52 +108,56 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         {confirmedOrder ? (
           /* Confirmation Success State */
           <div className="text-center py-6 space-y-4 animate-in zoom-in-95">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 ring-8 ring-emerald-500/10">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 ring-8 ring-emerald-50">
               <CheckCircle2 className="h-10 w-10" />
             </div>
 
-            <h3 className="font-heading text-2xl font-bold text-white">
+            <h3 className="font-heading text-2xl font-black text-slate-900">
               Agendamento Confirmado com Sucesso!
             </h3>
-            <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
-              Sua Ordem de Serviço foi gerada. Seu veículo já foi inserido no sistema de rastreamento em tempo real da Jomano.
+            <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-md mx-auto">
+              Sua Ordem de Serviço foi gerada. Leve seu veículo até a <strong className="text-slate-900">Av. Vicente de Carvalho, 730</strong> no horário agendado.
             </p>
 
-            <div className="my-6 rounded-2xl border border-slate-800 bg-slate-950/60 p-4 text-left max-w-md mx-auto space-y-2 text-xs">
-              <div className="flex justify-between border-b border-slate-800 pb-2">
-                <span className="text-slate-400">Número da OS:</span>
-                <span className="font-mono font-bold text-amber-400">{confirmedOrder.id}</span>
+            <div className="my-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left max-w-md mx-auto space-y-2 text-xs">
+              <div className="flex justify-between border-b border-slate-200 pb-2">
+                <span className="text-slate-500 font-bold">Número da OS:</span>
+                <span className="font-mono font-black text-blue-700">{confirmedOrder.id}</span>
               </div>
-              <div className="flex justify-between border-b border-slate-800 pb-2">
-                <span className="text-slate-400">Veículo & Placa:</span>
-                <span className="font-bold text-white">{confirmedOrder.vehicleModel} ({confirmedOrder.plate})</span>
+              <div className="flex justify-between border-b border-slate-200 pb-2">
+                <span className="text-slate-500 font-bold">Veículo & Placa:</span>
+                <span className="font-extrabold text-slate-900">{confirmedOrder.vehicleModel} ({confirmedOrder.plate})</span>
               </div>
-              <div className="flex justify-between border-b border-slate-800 pb-2">
-                <span className="text-slate-400">Data e Hora:</span>
-                <span className="font-semibold text-slate-200">{confirmedOrder.entryDate}</span>
+              <div className="flex justify-between border-b border-slate-200 pb-2">
+                <span className="text-slate-500 font-bold">Data e Hora:</span>
+                <span className="font-bold text-slate-800">{confirmedOrder.entryDate}</span>
+              </div>
+              <div className="flex justify-between border-b border-slate-200 pb-2">
+                <span className="text-slate-500 font-bold">Local:</span>
+                <span className="font-bold text-slate-900">Av. Vicente de Carvalho, 730 ({SHOP_CONTACT_INFO.locationShort})</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Serviço:</span>
-                <span className="font-semibold text-emerald-400">{confirmedOrder.serviceRequested}</span>
+                <span className="text-slate-500 font-bold">Serviço:</span>
+                <span className="font-black text-red-600">{confirmedOrder.serviceRequested}</span>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <a
-                href={`https://wa.me/${SHOP_CONTACT_INFO.phoneRaw}?text=${encodeURIComponent(
-                  `Olá Jomano Oficina! Confirmei meu agendamento da OS ${confirmedOrder.id} para meu veículo ${confirmedOrder.vehicleModel} (${confirmedOrder.plate}).`
+                href={`https://wa.me/${SHOP_CONTACT_INFO.whatsappRaw}?text=${encodeURIComponent(
+                  `Olá Jomano Auto Serviço! Confirmei meu agendamento da OS ${confirmedOrder.id} para o veículo ${confirmedOrder.vehicleModel} (${confirmedOrder.plate}) na Av. Vicente de Carvalho, 730.`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-xs font-bold text-white hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-950"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-xs font-black text-white hover:bg-emerald-500 transition-all shadow-md shadow-emerald-700/20"
               >
                 <Send className="h-4 w-4" />
-                <span>Enviar Confirmação no WhatsApp</span>
+                <span>Enviar no WhatsApp ({SHOP_CONTACT_INFO.whatsapp})</span>
               </a>
 
               <button
                 onClick={handleResetAndClose}
-                className="w-full sm:w-auto rounded-xl bg-amber-500 px-6 py-3 text-xs font-bold text-slate-950 hover:bg-amber-400 transition-all"
+                className="w-full sm:w-auto rounded-xl bg-blue-600 px-6 py-3 text-xs font-black text-white hover:bg-blue-700 transition-all"
               >
                 Acompanhar na Linha do Tempo
               </button>
@@ -162,33 +166,33 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         ) : (
           /* Main Booking Form */
           <div>
-            <div className="border-b border-slate-800 pb-4">
-              <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+            <div className="border-b border-slate-200 pb-4">
+              <span className="text-xs font-black text-blue-700 uppercase tracking-wider">
                 {SHOP_CONTACT_INFO.name}
               </span>
-              <h3 className="font-heading text-xl sm:text-2xl font-bold text-white mt-1">
+              <h3 className="font-heading text-xl sm:text-2xl font-black text-slate-900 mt-1">
                 Agendamento de Horário & Reserva de Box
               </h3>
-              <p className="text-xs text-slate-400">
-                Escolha o serviço desejado, informe os dados do veículo e garanta atendimento prioritário.
+              <p className="text-xs text-slate-500 font-medium">
+                Pátio Av. Vicente de Carvalho, 730 • RJ 21210-000 • Tel: {SHOP_CONTACT_INFO.phoneLandline} | WhatsApp: {SHOP_CONTACT_INFO.whatsapp}
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-5">
               {/* Service Selection */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-2">
                   1. Selecione o Serviço Principal
                 </label>
                 <select
                   id="booking-service-select"
                   value={formData.serviceId}
                   onChange={(e) => setFormData({ ...formData, serviceId: e.target.value })}
-                  className="w-full rounded-xl border border-slate-800 bg-slate-950 p-3 text-xs text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-slate-200 bg-white p-3 text-xs font-bold text-slate-900 focus:border-blue-600 focus:outline-none"
                 >
                   {DIVERSIFIED_SERVICES.map((srv) => (
                     <option key={srv.id} value={srv.id}>
-                      {srv.title} — A partir de R$ {srv.startingPrice.toFixed(2)} ({srv.warranty})
+                      {srv.title} — {srv.displayPrice} ({srv.warranty})
                     </option>
                   ))}
                 </select>
@@ -196,7 +200,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               {/* Vehicle Details */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-2">
                   2. Dados do Veículo
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -204,33 +208,33 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     <input
                       type="text"
                       id="vehicle-brand-input"
-                      placeholder="Marca (ex: Toyota, BMW)"
+                      placeholder="Marca (ex: Chevrolet, Peugeot)"
                       value={formData.vehicleBrand}
                       onChange={(e) => setFormData({ ...formData, vehicleBrand: e.target.value })}
                       required
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-xs text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none"
+                      className="w-full rounded-xl border-2 border-slate-200 bg-white p-2.5 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
                     />
                   </div>
                   <div>
                     <input
                       type="text"
                       id="vehicle-model-input"
-                      placeholder="Modelo (ex: Corolla, Hilux)"
+                      placeholder="Modelo (ex: Onix, 207, Gol)"
                       value={formData.vehicleModel}
                       onChange={(e) => setFormData({ ...formData, vehicleModel: e.target.value })}
                       required
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-xs text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none"
+                      className="w-full rounded-xl border-2 border-slate-200 bg-white p-2.5 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
                     />
                   </div>
                   <div>
                     <input
                       type="text"
                       id="vehicle-plate-input"
-                      placeholder="Placa (ex: BRA2E19)"
+                      placeholder="Placa (ex: RIO2E19)"
                       value={formData.vehiclePlate}
                       onChange={(e) => setFormData({ ...formData, vehiclePlate: e.target.value.toUpperCase() })}
                       required
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-xs text-white font-mono uppercase placeholder:text-slate-500 focus:border-amber-500 focus:outline-none"
+                      className="w-full rounded-xl border-2 border-slate-200 bg-white p-2.5 text-xs font-mono font-black uppercase text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -238,8 +242,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               {/* Date and Time slot */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  3. Data & Horário Preferencial
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-2">
+                  3. Data & Horário Preferencial no Pátio
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="relative">
@@ -250,7 +254,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       value={formData.preferredDate}
                       onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
                       required
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 pl-10 pr-3 py-2.5 text-xs text-white focus:border-amber-500 focus:outline-none"
+                      className="w-full rounded-xl border-2 border-slate-200 bg-white pl-10 pr-3 py-2.5 text-xs font-bold text-slate-900 focus:border-blue-600 focus:outline-none"
                     />
                   </div>
                   <div className="relative">
@@ -259,7 +263,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       id="preferred-time-select"
                       value={formData.preferredTime}
                       onChange={(e) => setFormData({ ...formData, preferredTime: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 pl-10 pr-3 py-2.5 text-xs text-white focus:border-amber-500 focus:outline-none"
+                      className="w-full rounded-xl border-2 border-slate-200 bg-white pl-10 pr-3 py-2.5 text-xs font-bold text-slate-900 focus:border-blue-600 focus:outline-none"
                     >
                       <option value="08:00">08:00 (Abertura)</option>
                       <option value="09:00">09:00</option>
@@ -274,8 +278,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               {/* Customer Contact */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  4. Contato do Proprietário
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-2">
+                  4. Contato do Proprietário (WhatsApp / Tel)
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <input
@@ -285,16 +289,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     value={formData.ownerName}
                     onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
                     required
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-xs text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-xl border-2 border-slate-200 bg-white p-2.5 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
                   />
                   <input
                     type="tel"
                     id="owner-phone-input"
-                    placeholder="WhatsApp / Telefone"
+                    placeholder="WhatsApp (ex: 21 96412-2372)"
                     value={formData.ownerPhone}
                     onChange={(e) => setFormData({ ...formData, ownerPhone: e.target.value })}
                     required
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-xs text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-xl border-2 border-slate-200 bg-white p-2.5 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
                   />
                   <input
                     type="email"
@@ -302,37 +306,37 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     placeholder="E-mail"
                     value={formData.ownerEmail}
                     onChange={(e) => setFormData({ ...formData, ownerEmail: e.target.value })}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-xs text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-xl border-2 border-slate-200 bg-white p-2.5 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Observations */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  Observações ou Sintomas Notados no Veículo (Opcional)
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-2">
+                  Observações ou Detalhes (Opcional)
                 </label>
                 <textarea
                   id="booking-notes-input"
-                  placeholder="Ex: Barulho na dianteira ao passar em lombadas, luz da injeção acesa..."
+                  placeholder="Ex: Quero alinhamento e balanceamento de roda de ferro, verificar barulho na suspensão..."
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={2}
-                  className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-xs text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-slate-200 bg-white p-2.5 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
               {/* Submit CTA */}
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
-                <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-                  Sem taxa de cancelamento
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
+                <span className="text-[11px] text-slate-500 font-semibold flex items-center gap-1">
+                  <MapPin className="h-3.5 w-3.5 text-red-600" />
+                  {SHOP_CONTACT_INFO.address}
                 </span>
 
                 <button
                   type="submit"
                   id="btn-submit-booking"
-                  className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-6 py-3 text-xs font-bold text-slate-950 shadow-lg shadow-amber-500/20 hover:bg-amber-400 transition-all hover:scale-105"
+                  className="inline-flex items-center gap-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 px-6 py-3 text-xs font-black text-slate-950 shadow-md shadow-yellow-500/20 transition-all hover:scale-105 active:scale-95"
                 >
                   <span>Confirmar Agendamento</span>
                   <ArrowRight className="h-4 w-4" />

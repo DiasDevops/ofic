@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { 
-  Cpu, 
-  CheckCircle, 
-  ShieldCheck, 
   Sparkles, 
   Layers, 
   Compass, 
-  Flame, 
   FileBadge,
   ArrowRight,
-  Info
+  ShieldCheck,
+  CheckCircle2,
+  Wrench
 } from 'lucide-react';
 import { ENGINE_TEARDOWN_PARTS } from '../data/mockData';
 
@@ -25,30 +23,30 @@ export const EngineWorkbenchSpotlight: React.FC<EngineWorkbenchSpotlightProps> =
   const selectedPart = ENGINE_TEARDOWN_PARTS.find((p) => p.id === selectedPartId) || ENGINE_TEARDOWN_PARTS[0];
 
   return (
-    <section id="engine-bench-section" className="relative overflow-hidden rounded-3xl border border-amber-500/30 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 p-6 sm:p-10 shadow-2xl">
-      {/* Decorative mechanical ambient glow */}
-      <div className="pointer-events-none absolute -top-40 right-0 h-96 w-96 rounded-full bg-amber-500/10 blur-3xl"></div>
-      <div className="pointer-events-none absolute bottom-0 left-0 h-64 w-64 rounded-full bg-orange-600/10 blur-3xl"></div>
+    <section id="engine-bench-section" className="relative overflow-hidden rounded-3xl border-2 border-amber-400 bg-white p-6 sm:p-10 shadow-xl">
+      {/* Decorative ambient light */}
+      <div className="pointer-events-none absolute -top-32 right-0 h-80 w-80 rounded-full bg-amber-100/60 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 left-0 h-64 w-64 rounded-full bg-yellow-100/60 blur-3xl" />
 
-      {/* Badge of prominence */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      {/* Header of section */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-amber-400">
-            <Sparkles className="h-3.5 w-3.5" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-400 bg-amber-50 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-amber-800 shadow-xs">
+            <Sparkles className="h-3.5 w-3.5 text-amber-600" />
             Diferencial em Destaque Exclusivo Jomano
           </div>
-          <h2 className="mt-2 font-heading text-2xl sm:text-4xl font-bold tracking-tight text-white">
+          <h2 className="mt-2 font-heading text-2xl sm:text-4xl font-black tracking-tight text-slate-900">
             Motor Desmontado na Bancada de Precisão
           </h2>
-          <p className="mt-1.5 text-sm sm:text-base text-slate-400 max-w-3xl">
-            Reconstrução cirúrgica com metrologia digital, tolerâncias micrométricas e garantia de 1 ano ou 30.000 km.
+          <p className="mt-1.5 text-sm sm:text-base text-slate-600 font-medium max-w-3xl">
+            Reconstrução cirúrgica com metrologia digital, tolerâncias micrométricas e garantia de 1 ano ou 30.000 km na Av. Vicente de Carvalho, 730.
           </p>
         </div>
 
         <button
           id="btn-schedule-engine-bench"
           onClick={onScheduleEngineService}
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 hover:from-amber-400 hover:to-amber-500 transition-all hover:scale-105"
+          className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 hover:bg-amber-400 px-5 py-3 text-sm font-black text-slate-950 shadow-md shadow-amber-500/20 active:scale-95 transition-all hover:scale-105"
         >
           <span>Agendar Diagnóstico de Motor</span>
           <ArrowRight className="h-4 w-4" />
@@ -57,10 +55,9 @@ export const EngineWorkbenchSpotlight: React.FC<EngineWorkbenchSpotlightProps> =
 
       {/* Main Grid: Workbench Visual Showcase + Interactive Metrology Panel */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        {/* Visual Engine Workbench Card (Featured Photo with details) */}
+        {/* Visual Engine Workbench Card */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="relative group overflow-hidden rounded-2xl border border-slate-700/80 bg-slate-900 shadow-xl">
-            {/* Real workbench photo */}
+          <div className="relative group overflow-hidden rounded-2xl border-2 border-slate-200 bg-slate-900 shadow-xl">
             <div className="relative aspect-video w-full overflow-hidden bg-slate-950">
               <img
                 src="https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=1400&q=80"
@@ -68,49 +65,49 @@ export const EngineWorkbenchSpotlight: React.FC<EngineWorkbenchSpotlightProps> =
                 referrerPolicy="no-referrer"
                 className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
 
               {/* Status overlay */}
               <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                <span className="rounded-lg bg-slate-950/80 backdrop-blur-md px-3 py-1 text-xs font-semibold text-amber-400 border border-amber-500/30">
+                <span className="rounded-lg bg-white/95 backdrop-blur-md px-3 py-1 text-xs font-black text-slate-900 border border-slate-200 shadow-sm">
                   🔬 Bancada Climatizada 20°C (Norma DIN)
                 </span>
-                <span className="rounded-lg bg-emerald-950/80 backdrop-blur-md px-3 py-1 text-xs font-semibold text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                  <ShieldCheck className="h-3 w-3" />
+                <span className="rounded-lg bg-emerald-600 px-3 py-1 text-xs font-black text-white shadow-sm flex items-center gap-1">
+                  <ShieldCheck className="h-3.5 w-3.5" />
                   Garantia de 1 Ano / 30.000 km
                 </span>
               </div>
 
-              {/* Floating metrics badge on the photo */}
-              <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+              {/* Floating metrics badge */}
+              <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-white">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
-                    Processo Artesanal de Alta Engenharia
+                  <span className="text-[11px] font-black uppercase tracking-wider text-yellow-300">
+                    Engenharia & Retífica no Pátio Jomano
                   </span>
-                  <p className="text-sm font-semibold text-white">
+                  <p className="text-sm font-bold drop-shadow">
                     Desmontagem Integral, Banho Químico Ultrassônico & Magnaflux
                   </p>
                 </div>
-                <div className="rounded-lg bg-slate-900/90 border border-slate-700 px-3 py-1.5 text-right backdrop-blur">
-                  <span className="text-[10px] text-slate-400 block">Precisão de Medição</span>
-                  <span className="font-heading text-sm font-bold text-amber-400">0,001 mm</span>
+                <div className="rounded-xl bg-slate-900/90 border border-slate-700 px-3 py-1.5 text-right backdrop-blur shadow-lg">
+                  <span className="text-[10px] text-slate-300 block font-semibold">Precisão Micrométrica</span>
+                  <span className="font-heading text-sm font-black text-amber-400">0,001 mm</span>
                 </div>
               </div>
             </div>
 
             {/* Quick workbench features row */}
-            <div className="grid grid-cols-3 divide-x divide-slate-800 border-t border-slate-800 bg-slate-900/60 p-3 text-center text-xs">
+            <div className="grid grid-cols-3 divide-x divide-slate-200 border-t border-slate-200 bg-white p-3.5 text-center text-xs">
               <div>
-                <span className="block text-slate-400">Torque</span>
-                <strong className="text-white font-medium">Torquímetro Digital</strong>
+                <span className="block text-slate-500 font-semibold">Aperto Angular</span>
+                <strong className="text-slate-900 font-extrabold">Torquímetro Digital</strong>
               </div>
               <div>
-                <span className="block text-slate-400">Limpeza</span>
-                <strong className="text-white font-medium">Cuba Ultrassônica</strong>
+                <span className="block text-slate-500 font-semibold">Limpeza Técnica</span>
+                <strong className="text-slate-900 font-extrabold">Cuba Ultrassônica</strong>
               </div>
               <div>
-                <span className="block text-slate-400">Balanceamento</span>
-                <strong className="text-white font-medium">Balança Analítica 0.1g</strong>
+                <span className="block text-slate-500 font-semibold">Balanceamento</span>
+                <strong className="text-slate-900 font-extrabold">Balança 0.1g</strong>
               </div>
             </div>
           </div>
@@ -118,13 +115,13 @@ export const EngineWorkbenchSpotlight: React.FC<EngineWorkbenchSpotlightProps> =
 
         {/* Interactive Component & Metrology Breakdown */}
         <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-4">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                <Layers className="h-4 w-4 text-amber-400" />
-                Exploração Interativa de Peças na Bancada
+          <div className="rounded-2xl border-2 border-slate-200 bg-slate-50/70 p-5 shadow-sm">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <Layers className="h-4 w-4 text-amber-600" />
+                Componentes Inspecionados na Bancada
               </span>
-              <span className="text-[11px] text-amber-400/90">Clique para inspecionar</span>
+              <span className="text-[11px] font-bold text-amber-700">Clique para inspecionar</span>
             </div>
 
             {/* Selector tabs */}
@@ -136,14 +133,14 @@ export const EngineWorkbenchSpotlight: React.FC<EngineWorkbenchSpotlightProps> =
                     key={part.id}
                     id={`btn-engine-part-${part.id}`}
                     onClick={() => setSelectedPartId(part.id)}
-                    className={`text-left p-2.5 rounded-xl border text-xs font-medium transition-all ${
+                    className={`text-left p-3 rounded-xl border-2 text-xs font-bold transition-all ${
                       isSelected
-                        ? 'border-amber-500 bg-amber-500/10 text-white shadow-sm ring-1 ring-amber-500/30'
-                        : 'border-slate-800 bg-slate-950/40 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                        ? 'border-amber-500 bg-amber-100/70 text-slate-950 shadow-sm'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900'
                     }`}
                   >
-                    <span className="block font-bold text-white truncate">{part.name.split('&')[0]}</span>
-                    <span className="text-[10px] text-slate-400 truncate block">
+                    <span className="block font-black text-slate-900 truncate">{part.name.split('&')[0]}</span>
+                    <span className="text-[10px] text-amber-700 font-extrabold truncate block">
                       Tol: {part.tolerance}
                     </span>
                   </button>
@@ -152,54 +149,54 @@ export const EngineWorkbenchSpotlight: React.FC<EngineWorkbenchSpotlightProps> =
             </div>
 
             {/* Selected Component Details Box */}
-            <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/80 p-4">
+            <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <h4 className="font-heading text-base font-bold text-white">
+                <h4 className="font-heading text-base font-black text-slate-900">
                   {selectedPart.name}
                 </h4>
-                <span className="rounded bg-amber-500/20 px-2 py-0.5 text-[11px] font-bold text-amber-300 ring-1 ring-amber-500/40">
+                <span className="rounded-lg bg-amber-100 px-2.5 py-0.5 text-[11px] font-black text-amber-800 border border-amber-300">
                   {selectedPart.tolerance}
                 </span>
               </div>
 
-              <p className="mt-2 text-xs text-slate-300 leading-relaxed">
+              <p className="mt-2 text-xs text-slate-600 leading-relaxed font-medium">
                 {selectedPart.precisionDetail}
               </p>
 
-              <div className="mt-3.5 space-y-2 border-t border-slate-800/80 pt-3 text-[11px]">
-                <div className="flex items-center justify-between text-slate-400">
-                  <span className="flex items-center gap-1.5">
-                    <Compass className="h-3.5 w-3.5 text-amber-400" />
+              <div className="mt-3.5 space-y-2 border-t border-slate-100 pt-3 text-[11px]">
+                <div className="flex items-center justify-between text-slate-600">
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <Compass className="h-3.5 w-3.5 text-amber-600" />
                     Método de Ensaio:
                   </span>
-                  <span className="font-semibold text-slate-200">{selectedPart.inspectionType}</span>
+                  <span className="font-bold text-slate-900">{selectedPart.inspectionType}</span>
                 </div>
-                <div className="flex items-center justify-between text-slate-400">
-                  <span className="flex items-center gap-1.5">
-                    <FileBadge className="h-3.5 w-3.5 text-emerald-400" />
+                <div className="flex items-center justify-between text-slate-600">
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <FileBadge className="h-3.5 w-3.5 text-emerald-600" />
                     Laudo Técnico Emitido:
                   </span>
-                  <span className="font-semibold text-emerald-400">Entregue com o Veículo</span>
+                  <span className="font-black text-emerald-700">Entregue com o Veículo</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Pillars of trust box */}
-          <div className="rounded-2xl border border-slate-800/80 bg-slate-900/40 p-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold text-white block">Peças Genuínas</span>
-                  <span className="text-[11px] text-slate-400">Mahle, KS, Metal Leve & Elring</span>
+                  <span className="font-black text-slate-900 block">Peças Genuínas</span>
+                  <span className="text-[11px] text-slate-500 font-semibold">Mahle, Metal Leve & Sabó</span>
                 </div>
               </div>
               <div className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold text-white block">Fotos da Bancada</span>
-                  <span className="text-[11px] text-slate-400">Enviadas direto no WhatsApp</span>
+                  <span className="font-black text-slate-900 block">Fotos no WhatsApp</span>
+                  <span className="text-[11px] text-slate-500 font-semibold">(21) 96412-2372</span>
                 </div>
               </div>
             </div>
