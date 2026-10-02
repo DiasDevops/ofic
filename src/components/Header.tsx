@@ -12,7 +12,9 @@ import {
   Menu,
   X,
   MessageSquare,
-  Sparkles
+  Sparkles,
+  Calendar,
+  Building2
 } from 'lucide-react';
 import { AppNotification } from '../types';
 import { SHOP_CONTACT_INFO } from '../data/mockData';
@@ -25,6 +27,7 @@ interface HeaderProps {
   onOpenBooking: () => void;
   activeSection: string;
   onNavigate: (section: string) => void;
+  isShopMode?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -34,6 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenBooking,
   activeSection,
   onNavigate,
+  isShopMode = false,
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -41,95 +45,106 @@ export const Header: React.FC<HeaderProps> = ({
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const navLinks = [
-    { id: 'promos', label: 'Promoções do Pátio' },
-    { id: 'tips', label: 'Dicas Preventivas' },
-    { id: 'tracker', label: 'Rastrear Veículo (Ao Vivo)' },
-    { id: 'engine-bench', label: 'Motor na Bancada' },
-    { id: 'services', label: 'Serviços & Pneus' },
-    { id: 'history', label: 'Histórico de Reparos' },
+    { id: 'promos', label: 'Promoções do Pátio', shortLabel: 'Promoções' },
+    { id: 'tips', label: 'Dicas Preventivas', shortLabel: 'Dicas' },
+    { id: 'tracker', label: 'Rastrear Veículo (Ao Vivo)', shortLabel: 'Rastreamento' },
+    { id: 'engine-bench', label: 'Motor na Bancada', shortLabel: 'Motor Bancada' },
+    { id: 'services', label: 'Serviços & Pneus', shortLabel: 'Serviços' },
+    { id: 'history', label: 'Histórico de Reparos', shortLabel: 'Histórico' },
   ];
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-sm">
       {/* Top micro-bar with location RJ 21210-000, WhatsApp and Landline */}
-      <div className="border-b border-blue-100 bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 px-4 py-1.5 text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between text-xs font-semibold">
-          <div className="flex items-center gap-4 sm:gap-6">
-            <span className="flex items-center gap-1.5 text-yellow-300 font-extrabold">
-              <MapPin className="h-3.5 w-3.5 text-yellow-300" />
-              <span>{SHOP_CONTACT_INFO.address} — <span className="bg-yellow-400 text-slate-950 px-1.5 py-0.2 rounded font-black text-[11px]">{SHOP_CONTACT_INFO.locationShort}</span></span>
+      <div className="border-b border-blue-100 bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 px-3 sm:px-4 py-1.5 text-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between text-xs font-semibold gap-2">
+          <div className="flex items-center gap-2 sm:gap-6 min-w-0">
+            <span className="flex items-center gap-1.5 text-yellow-300 font-extrabold truncate">
+              <MapPin className="h-3.5 w-3.5 text-yellow-300 shrink-0" />
+              <span className="truncate">
+                <span className="hidden sm:inline">{SHOP_CONTACT_INFO.address}</span>
+                <span className="sm:hidden">Vicente de Carvalho, 730</span>
+                {' — '}
+                <span className="bg-yellow-400 text-slate-950 px-1.5 py-0.5 rounded font-black text-[10px] sm:text-[11px] whitespace-nowrap">
+                  {SHOP_CONTACT_INFO.locationShort}
+                </span>
+              </span>
             </span>
-            <span className="hidden md:inline-flex items-center gap-1 text-blue-100 text-[11px]">
+            <span className="hidden lg:inline-flex items-center gap-1 text-blue-100 text-[11px] whitespace-nowrap">
               <Clock className="h-3 w-3" />
               {SHOP_CONTACT_INFO.workingHours}
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-4 shrink-0 text-xs">
             <a
               href={`https://wa.me/${SHOP_CONTACT_INFO.whatsappRaw}`}
               target="_blank"
               rel="noopener noreferrer"
               id="header-whatsapp-link"
-              className="flex items-center gap-1.5 font-bold text-emerald-300 hover:text-white transition-colors"
+              className="flex items-center gap-1.5 font-bold text-emerald-300 hover:text-white transition-colors whitespace-nowrap text-[11px] sm:text-xs"
             >
-              <Send className="h-3.5 w-3.5" />
-              <span>WhatsApp: {SHOP_CONTACT_INFO.whatsapp}</span>
+              <Send className="h-3.5 w-3.5 shrink-0" />
+              <span>
+                <span className="hidden sm:inline">WhatsApp: </span>
+                {SHOP_CONTACT_INFO.whatsapp}
+              </span>
             </a>
-            <span className="hidden sm:inline text-blue-300">|</span>
+            <span className="hidden md:inline text-blue-300">|</span>
             <a
               href={`tel:${SHOP_CONTACT_INFO.landlineRaw}`}
               id="header-phone-link"
-              className="hidden sm:flex items-center gap-1.5 text-blue-100 hover:text-white transition-colors"
+              className="hidden md:flex items-center gap-1.5 text-blue-100 hover:text-white transition-colors whitespace-nowrap text-[11px] sm:text-xs"
             >
-              <Phone className="h-3 w-3 text-yellow-300" />
-              <span>Fixo: {SHOP_CONTACT_INFO.phoneLandline}</span>
+              <Phone className="h-3 w-3 text-yellow-300 shrink-0" />
+              <span>Loja: {SHOP_CONTACT_INFO.phoneLandline}</span>
             </a>
           </div>
         </div>
       </div>
 
       {/* Main navigation bar */}
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 gap-2 sm:gap-4">
         {/* Brand identity with official red badge */}
         <div 
           onClick={() => onNavigate('promos')} 
-          className="cursor-pointer"
+          className="cursor-pointer shrink-0"
         >
           <JomanoLogo size="md" />
         </div>
 
         {/* Desktop Nav Items */}
-        <nav className="hidden xl:flex items-center gap-1">
+        <nav className="hidden xl:flex items-center gap-1 shrink min-w-0">
           {navLinks.map((link) => (
             <button
               key={link.id}
               id={`nav-${link.id}`}
               onClick={() => onNavigate(link.id)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`px-2.5 2xl:px-3.5 py-1.5 2xl:py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 activeSection === link.id
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
                   : 'text-slate-700 hover:bg-slate-100 hover:text-blue-700'
               }`}
             >
-              {link.label}
+              <span className="xl:hidden 2xl:inline">{link.label}</span>
+              <span className="hidden xl:inline 2xl:hidden">{link.shortLabel}</span>
             </button>
           ))}
         </nav>
 
         {/* Action Controls (Notifications, Quick Support, Booking) */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* Notification bell dropdown toggle */}
           <div className="relative">
             <button
               id="notifications-toggle-btn"
               onClick={() => setShowNotifications(!showNotifications)}
               title="Notificações Automáticas de Manutenção"
-              className="relative rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-all"
+              className="relative rounded-xl border border-slate-200 bg-slate-50 p-2 sm:p-2.5 text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-all shrink-0"
             >
-              <Bell className="h-5 w-5" />
+              <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-black text-white ring-2 ring-white animate-pulse">
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-red-600 text-[9px] sm:text-[10px] font-black text-white ring-2 ring-white animate-pulse">
                   {unreadCount}
                 </span>
               )}
@@ -139,7 +154,7 @@ export const Header: React.FC<HeaderProps> = ({
             {showNotifications && (
               <div 
                 id="notifications-panel"
-                className="absolute right-0 mt-3 w-80 sm:w-96 rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl ring-1 ring-black/5 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
+                className="absolute right-0 mt-3 w-80 sm:w-96 max-w-[calc(100vw-2rem)] rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl ring-1 ring-black/5 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
               >
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <div className="flex items-center gap-2">
@@ -209,14 +224,32 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
+          {/* Admin / Oficina Mode Shortcut */}
+          <button
+            id="header-admin-btn"
+            onClick={() => onNavigate('admin')}
+            title="Área do Administrador • Modo Oficina"
+            className={`flex items-center gap-1.5 rounded-xl px-2.5 sm:px-3 py-2 text-xs font-black transition-all shrink-0 whitespace-nowrap active:scale-95 ${
+              activeSection === 'admin'
+                ? 'bg-amber-500 text-slate-950 ring-2 ring-amber-400 shadow-md'
+                : isShopMode
+                ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200'
+                : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <Building2 className={`h-3.5 w-3.5 shrink-0 ${isShopMode || activeSection === 'admin' ? 'text-amber-950' : 'text-slate-600'}`} />
+            <span className="hidden sm:inline">{isShopMode ? 'Modo Oficina' : 'Oficina'}</span>
+            <span className="sm:hidden">{isShopMode ? 'Admin' : 'Loja'}</span>
+          </button>
+
           {/* Quick Support Button (Red Theme) */}
           <button
             id="quick-support-header-btn"
             onClick={onOpenQuickSupport}
-            className="flex items-center gap-1.5 sm:gap-2 rounded-xl bg-red-600 px-3.5 py-2 text-xs sm:text-sm font-extrabold text-white shadow-md shadow-red-600/20 hover:bg-red-700 active:scale-95 transition-all"
+            className="flex items-center gap-1.5 rounded-xl bg-red-600 px-2.5 sm:px-3.5 py-2 text-xs font-extrabold text-white shadow-md shadow-red-600/20 hover:bg-red-700 active:scale-95 transition-all shrink-0 whitespace-nowrap"
           >
-            <MessageSquare className="h-4 w-4" />
-            <span className="hidden sm:inline">Suporte Rápido</span>
+            <MessageSquare className="h-4 w-4 shrink-0" />
+            <span className="hidden sm:inline 2xl:inline">Suporte<span className="hidden 2xl:inline"> Rápido</span></span>
             <span className="sm:hidden">Ajuda</span>
           </button>
 
@@ -224,16 +257,18 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             id="header-booking-btn"
             onClick={onOpenBooking}
-            className="flex items-center gap-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 px-3.5 py-2 text-xs sm:text-sm font-black text-slate-950 shadow-md shadow-yellow-500/20 active:scale-95 transition-all"
+            className="flex items-center gap-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 px-2.5 sm:px-3.5 py-2 text-xs font-black text-slate-950 shadow-md shadow-yellow-500/20 active:scale-95 transition-all shrink-0 whitespace-nowrap"
           >
-            <span>Agendar Horário</span>
+            <Calendar className="h-3.5 w-3.5 shrink-0 hidden sm:inline" />
+            <span>Agendar<span className="hidden sm:inline"> Horário</span></span>
           </button>
 
           {/* Mobile menu hamburger toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="rounded-xl border border-slate-200 bg-slate-50 p-2 text-slate-700 hover:bg-slate-100 xl:hidden"
+            className="rounded-xl border border-slate-200 bg-slate-50 p-2 text-slate-700 hover:bg-slate-100 xl:hidden shrink-0"
             id="mobile-menu-toggle-btn"
+            aria-label="Menu principal"
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -259,6 +294,20 @@ export const Header: React.FC<HeaderProps> = ({
               {link.label}
             </button>
           ))}
+          <button
+            onClick={() => {
+              onNavigate('admin');
+              setMobileMenuOpen(false);
+            }}
+            className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 ${
+              activeSection === 'admin'
+                ? 'bg-amber-500 text-slate-950 font-black'
+                : 'text-amber-900 bg-amber-50 border border-amber-200 hover:bg-amber-100'
+            }`}
+          >
+            <Building2 className="h-4 w-4" />
+            <span>Painel do Administrador (Modo Oficina)</span>
+          </button>
           <div className="pt-3 border-t border-slate-200 space-y-2 text-xs">
             <a
               href={`https://wa.me/${SHOP_CONTACT_INFO.whatsappRaw}`}

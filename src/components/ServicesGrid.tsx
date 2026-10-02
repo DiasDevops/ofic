@@ -46,7 +46,7 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
             Alinhamento de Pneus, Balanceamentos & Mecânica
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl">
-            Valores acessíveis e peças de primeira linha com garantia. Rampa de alinhamento computadorizado, pneus ecológicos e retífica.
+            Valores acessíveis e peças de primeira linha com garantia. Rampa de alinhamento, balanceamentos em rodas de ferro, pneus ecológicos e retífica.
           </p>
         </div>
 
@@ -138,13 +138,13 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
               <div className="pt-2 flex items-center justify-between border-t border-slate-100 gap-2">
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 block uppercase">
-                    {service.displayPrice.includes('R$') ? 'Valor Especial' : 'Condição'}
+                    {service.displayPrice.startsWith('R$') ? 'Valor Especial' : 'Preço'}
                   </span>
                   <span
                     className={`font-heading font-black leading-snug block ${
-                      service.displayPrice.includes('R$')
+                      service.displayPrice.startsWith('R$')
                         ? 'text-lg text-red-600'
-                        : 'text-xs text-blue-700 max-w-[135px]'
+                        : 'text-[11px] text-blue-900 max-w-[160px]'
                     }`}
                   >
                     {service.displayPrice}

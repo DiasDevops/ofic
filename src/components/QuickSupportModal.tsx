@@ -29,15 +29,17 @@ export const QuickSupportModal: React.FC<QuickSupportModalProps> = ({
   const [callbackPhone, setCallbackPhone] = useState('');
   const [urgencyReason, setUrgencyReason] = useState('Dúvida sobre manutenção em andamento');
   const [callbackRequested, setCallbackRequested] = useState(false);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
   const handleCallbackSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!callbackPhone) {
-      alert('Por favor, digite seu telefone com DDD.');
+    if (!callbackPhone.trim()) {
+      setPhoneError('Por favor, digite seu telefone com DDD.');
       return;
     }
+    setPhoneError(null);
     setCallbackRequested(true);
   };
 
@@ -152,6 +154,11 @@ export const QuickSupportModal: React.FC<QuickSupportModalProps> = ({
             </div>
           ) : (
             <form onSubmit={handleCallbackSubmit} className="space-y-3">
+              {phoneError && (
+                <div className="rounded-xl border border-red-300 bg-red-50 p-2 text-xs font-bold text-red-700">
+                  {phoneError}
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <Headphones className="h-4 w-4 text-slate-700" />
                 <span className="text-xs font-black uppercase tracking-wider text-slate-800">
@@ -227,7 +234,7 @@ export const FloatingSupportButton: React.FC<{ onClick: () => void }> = ({ onCli
       </span>
       <Headphones className="h-5 w-5" />
       <span className="hidden sm:inline text-xs font-black tracking-wide uppercase">
-        Suporte Rápido (21) 96412-2372
+        Suporte Rápido: 21-964122372 / Loja: 33811320
       </span>
     </button>
   );

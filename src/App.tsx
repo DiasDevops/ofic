@@ -26,6 +26,9 @@ import { NotificationToast } from './components/NotificationToast';
 import { MaintenanceTipsSection } from './components/MaintenanceTipsSection';
 import { PeriodicTipTicker } from './components/PeriodicTipTicker';
 import { Footer } from './components/Footer';
+import { AdminPanel } from './components/AdminPanel';
+import { AdminLoginModal } from './components/AdminLoginModal';
+import { isAdminAuthenticated, setAdminAuthenticated } from './utils/auth';
 
 export default function App() {
   // Application persistent state
@@ -68,6 +71,26 @@ export default function App() {
 
   // Active section for navigation
   const [activeSection, setActiveSection] = useState('promos');
+
+  // Shop Mode vs Client Privacy Mode - Only unlocked when admin enters the password
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => isAdminAuthenticated());
+  const [isAdminLoginModalOpen, setIsAdminLoginModalOpen] = useState(false);
+  const [isShopMode, setIsShopMode] = useState<boolean>(() => isAdminAuthenticated());
+
+  const handleToggleShopMode = (enabled: boolean) => {
+    if (enabled) {
+      if (!isAdminAuthenticated() && !isAdminLoggedIn) {
+        setIsAdminLoginModalOpen(true);
+        return;
+      }
+      setIsShopMode(true);
+      setIsAdminLoggedIn(true);
+    } else {
+      setIsShopMode(false);
+      setIsAdminLoggedIn(false);
+      setAdminAuthenticated(false);
+    }
+  };
 
   // Save vehicles state to local storage
   useEffect(() => {
@@ -134,7 +157,7 @@ export default function App() {
           newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Vistoria e check-in no pátio Vicente de Carvalho, 730 reiniciados.`;
         } else if (nextStage === 'diagnostico') {
           newProgress = 40;
-          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Rampa de alinhamento 3D e scanner OBD2 concluídos com sucesso.`;
+          newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Rampa de alinhamento e scanner OBD2 concluídos com sucesso.`;
         } else if (nextStage === 'execucao') {
           newProgress = 70;
           newNote = `${new Date().toLocaleTimeString().slice(0, 5)} - Manutenção mecânica e alinhamento/balanceamento em execução no elevador.`;
@@ -191,6 +214,18 @@ export default function App() {
 
   // Scroll / Navigate helpers
   const handleNavigate = (sectionId: string) => {
+    if (sectionId === 'admin') {
+      if (isAdminLoggedIn || isAdminAuthenticated()) {
+        setIsAdminLoggedIn(true);
+        setIsShopMode(true);
+        setActiveSection('admin');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setIsAdminLoginModalOpen(true);
+      }
+      return;
+    }
+
     setActiveSection(sectionId);
     let targetEl: HTMLElement | null = null;
     if (sectionId === 'promos') targetEl = document.getElementById('promos-section');
@@ -240,66 +275,87 @@ export default function App() {
         onOpenBooking={() => handleOpenBookingWithPromo()}
         activeSection={activeSection}
         onNavigate={handleNavigate}
+        isShopMode={isShopMode || isAdminLoggedIn}
       />
 
       {/* Main Content Area */}
       <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-14 flex-1">
-        {/* 1. Hero Section with Vivid Daylight Styling */}
-        <HeroSection
-          onOpenBooking={() => handleOpenBookingWithPromo()}
-          onScrollToTracker={() => handleNavigate('tracker')}
-          onScrollToEngineBench={() => handleNavigate('engine-bench')}
-          onScrollToPromos={() => handleNavigate('promos')}
-        />
-
-        {/* 2. Storefront Banner inspired by the uploaded physical store facade */}
-        <div id="promos-section">
-          <StorefrontBanner
-            onScheduleService={(promoTitle) => handleOpenBookingWithPromo(promoTitle)}
+        {activeSection === 'admin' ? (
+          <AdminPanel
+            vehicles={vehicles}
+            onSimulateStatusAdvance={handleSimulateStatusAdvance}
+            onLogout={() => {
+              setAdminAuthenticated(false);
+              setIsShopMode(false);
+              setIsAdminLoggedIn(false);
+              handleNavigate('tracker');
+            }}
+            onReturnToPublicSite={() => handleNavigate('tracker')}
           />
-        </div>
+        ) : (
+          <>
+            {/* 1. Hero Section with Vivid Daylight Styling */}
+            <HeroSection
+              onOpenBooking={() => handleOpenBookingWithPromo()}
+              onScrollToTracker={() => handleNavigate('tracker')}
+              onScrollToEngineBench={() => handleNavigate('engine-bench')}
+              onScrollToPromos={() => handleNavigate('promos')}
+            />
 
-        {/* 2.5 DICAS DE MANUTENÇÃO PREVENTIVA (Cards Rotativos Educativos) */}
-        <MaintenanceTipsSection
-          onScheduleServiceWithTitle={(title) => handleOpenBookingWithPromo(title)}
-        />
+            {/* 2. Storefront Banner inspired by the uploaded physical store facade */}
+            <div id="promos-section">
+              <StorefrontBanner
+                onScheduleService={(promoTitle) => handleOpenBookingWithPromo(promoTitle)}
+              />
+            </div>
 
-        {/* 3. ACOMPANHAMENTO EM TEMPO REAL: Vehicle Live Tracker */}
-        <LiveVehicleTracker
-          vehicles={vehicles}
-          selectedVehicleId={selectedVehicleId}
-          onSelectVehicle={(id) => setSelectedVehicleId(id)}
-          onSimulateStatusAdvance={handleSimulateStatusAdvance}
-          onOpenQuickSupportForVehicle={(vehicle) => {
-            setSupportActiveVehicle(vehicle);
-            setIsQuickSupportOpen(true);
-          }}
-        />
+            {/* 2.5 DICAS DE MANUTENÇÃO PREVENTIVA (Cards Rotativos Educativos) */}
+            <MaintenanceTipsSection
+              onScheduleServiceWithTitle={(title) => handleOpenBookingWithPromo(title)}
+            />
 
-        {/* 4. DIFERENCIAL EM DESTAQUE: Motor Desmontado na Bancada */}
-        <EngineWorkbenchSpotlight
-          onScheduleEngineService={() => {
-            setPreSelectedServiceId('srv-motor');
-            setIsBookingOpen(true);
-          }}
-        />
+            {/* 3. ACOMPANHAMENTO EM TEMPO REAL: Vehicle Live Tracker */}
+            <LiveVehicleTracker
+              vehicles={vehicles}
+              selectedVehicleId={selectedVehicleId}
+              onSelectVehicle={(id) => setSelectedVehicleId(id)}
+              onSimulateStatusAdvance={handleSimulateStatusAdvance}
+              onOpenQuickSupportForVehicle={(vehicle) => {
+                setSupportActiveVehicle(vehicle);
+                setIsQuickSupportOpen(true);
+              }}
+              isShopMode={isShopMode || isAdminLoggedIn}
+              onToggleShopMode={handleToggleShopMode}
+              onNavigateToAdmin={() => handleNavigate('admin')}
+            />
 
-        {/* 5. SERVIÇOS DIVERSIFICADOS: Alinhamento de pneus, balanceamento roda ferro, óleos & catálogo */}
-        <ServicesGrid
-          onSelectServiceToBook={(serviceId) => {
-            setPreSelectedServiceId(serviceId);
-            setIsBookingOpen(true);
-          }}
-        />
+            {/* 4. DIFERENCIAL EM DESTAQUE: Motor Desmontado na Bancada */}
+            <EngineWorkbenchSpotlight
+              onScheduleEngineService={() => {
+                setPreSelectedServiceId('srv-motor');
+                setIsBookingOpen(true);
+              }}
+            />
 
-        {/* 6. HISTÓRICO COMPLETO DE REPAROS: Digital Log, Receipts & Warranties */}
-        <RepairHistory
-          historyRecords={repairHistory}
-          onOpenBookingForVehicle={() => {
-            setPreSelectedServiceId(undefined);
-            setIsBookingOpen(true);
-          }}
-        />
+            {/* 5. SERVIÇOS DIVERSIFICADOS: Alinhamento de pneus, balanceamento roda ferro, óleos & catálogo */}
+            <ServicesGrid
+              onSelectServiceToBook={(serviceId) => {
+                setPreSelectedServiceId(serviceId);
+                setIsBookingOpen(true);
+              }}
+            />
+
+            {/* 6. HISTÓRICO COMPLETO DE REPAROS: Digital Log, Receipts & Warranties */}
+            <RepairHistory
+              historyRecords={repairHistory}
+              onOpenBookingForVehicle={() => {
+                setPreSelectedServiceId(undefined);
+                setIsBookingOpen(true);
+              }}
+              isShopMode={isShopMode || isAdminLoggedIn}
+            />
+          </>
+        )}
       </main>
 
       {/* Periodic Floating Tip Ticker for continuous education */}
@@ -328,6 +384,19 @@ export default function App() {
         isOpen={isQuickSupportOpen}
         onClose={() => setIsQuickSupportOpen(false)}
         activeVehicle={supportActiveVehicle}
+      />
+
+      {/* Admin Login Modal */}
+      <AdminLoginModal
+        isOpen={isAdminLoginModalOpen}
+        onClose={() => setIsAdminLoginModalOpen(false)}
+        onSuccess={() => {
+          setIsAdminLoggedIn(true);
+          setIsShopMode(true);
+          setIsAdminLoginModalOpen(false);
+          setActiveSection('admin');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
 
       {/* Global Footer */}

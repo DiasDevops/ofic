@@ -21,17 +21,32 @@ import { SHOP_CONTACT_INFO } from '../data/mockData';
 interface RepairHistoryProps {
   historyRecords: RepairHistoryRecord[];
   onOpenBookingForVehicle?: (plate: string, model: string) => void;
+  isShopMode?: boolean;
 }
 
 export const RepairHistory: React.FC<RepairHistoryProps> = ({
   historyRecords,
   onOpenBookingForVehicle,
+  isShopMode = false,
 }) => {
   const [filterPlate, setFilterPlate] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRecordForModal, setSelectedRecordForModal] = useState<RepairHistoryRecord | null>(null);
 
-  const uniquePlates = Array.from(new Set(historyRecords.map((r) => r.plate)));
+  const maskPlate = (plate: string): string => {
+    if (isShopMode) return plate;
+    if (!plate) return '***-****';
+    const parts = plate.split('-');
+    if (parts.length === 2) {
+      return `${parts[0]}-••••`;
+    }
+    if (plate.length >= 7) {
+      return `${plate.slice(0, 3)}-••••`;
+    }
+    return '•••••••';
+  };
+
+  const uniquePlates: string[] = Array.from(new Set(historyRecords.map((r) => r.plate)));
 
   const filteredRecords = historyRecords.filter((record) => {
     const matchesPlate = filterPlate === 'ALL' || record.plate === filterPlate;
@@ -84,7 +99,7 @@ export const RepairHistory: React.FC<RepairHistoryProps> = ({
                     : 'bg-white border border-slate-200 text-slate-700 hover:border-blue-400'
                 }`}
               >
-                {plate}
+                {maskPlate(plate)}
               </button>
             ))}
           </div>
@@ -128,7 +143,7 @@ export const RepairHistory: React.FC<RepairHistoryProps> = ({
                 {/* Overlaid Badges */}
                 <div className="absolute top-3 left-3 flex items-center gap-2">
                   <span className="rounded-md bg-white px-2 py-0.5 font-mono text-xs font-black tracking-wider text-slate-950 shadow">
-                    {record.plate}
+                    {maskPlate(record.plate)}
                   </span>
                   <span className="rounded-md bg-slate-900/80 backdrop-blur px-2 py-0.5 text-[11px] font-bold text-white border border-slate-700">
                     {record.osNumber}
@@ -259,7 +274,7 @@ export const RepairHistory: React.FC<RepairHistoryProps> = ({
               </div>
               <div>
                 <span className="text-slate-500 block text-[10px] font-bold uppercase">Placa</span>
-                <strong className="text-blue-700 font-mono font-black">{selectedRecordForModal.plate}</strong>
+                <strong className="text-blue-700 font-mono font-black">{maskPlate(selectedRecordForModal.plate)}</strong>
               </div>
               <div>
                 <span className="text-slate-500 block text-[10px] font-bold uppercase">Odômetro</span>

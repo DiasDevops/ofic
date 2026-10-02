@@ -12,19 +12,19 @@ export const JomanoLogo: React.FC<JomanoLogoProps> = ({
   showSubtitle = true,
 }) => {
   const iconSizes = {
-    sm: 'h-9 w-9',
-    md: 'h-11 w-11',
-    lg: 'h-14 w-14',
+    sm: 'h-8 w-8 sm:h-9 sm:w-9',
+    md: 'h-9 w-9 sm:h-11 sm:w-11',
+    lg: 'h-12 w-12 sm:h-14 sm:w-14',
   };
 
   const titleSizes = {
-    sm: 'text-lg',
-    md: 'text-xl sm:text-2xl',
+    sm: 'text-base sm:text-lg',
+    md: 'text-lg sm:text-xl xl:text-2xl',
     lg: 'text-2xl sm:text-3xl',
   };
 
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
+    <div className={`flex items-center gap-2.5 sm:gap-3 shrink-0 ${className}`}>
       {/* Official Red Rounded Badge inspired by the Jomano storefront photo */}
       <div
         className={`relative flex ${iconSizes[size]} shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-red-600 via-red-700 to-rose-900 text-white shadow-lg shadow-red-600/30 ring-2 ring-red-500/40 p-1.5 transition-transform hover:scale-105`}
@@ -63,17 +63,17 @@ export const JomanoLogo: React.FC<JomanoLogoProps> = ({
         </svg>
       </div>
 
-      <div className="leading-tight">
-        <div className="flex items-center gap-2">
+      <div className="leading-tight shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <span className={`font-heading font-black tracking-tight text-slate-900 ${titleSizes[size]}`}>
             JOMANO
           </span>
-          <span className="rounded-md bg-blue-600 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-sm">
+          <span className="rounded-md bg-blue-600 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-white shadow-sm whitespace-nowrap">
             Auto Serviço
           </span>
         </div>
         {showSubtitle && (
-          <p className="text-[11px] font-bold text-slate-600 tracking-wide uppercase">
+          <p className="text-[10px] sm:text-[11px] font-bold text-slate-600 tracking-wide uppercase whitespace-nowrap hidden sm:block">
             Centro Automotivo • RJ 21210-000
           </p>
         )}

@@ -92,37 +92,37 @@ export const Footer: React.FC<FooterProps> = ({
               <li className="flex items-center justify-between text-slate-900 font-bold">
                 <span className="flex items-center gap-1.5">
                   <Disc className="h-3.5 w-3.5 text-blue-600" />
-                  Alinhamento e Balanceamento
+                  Alinhamento e Balanceamentos (Roda Ferro)
                 </span>
-                <span className="text-blue-700 font-black">R$ 100,00</span>
+                <span className="text-blue-700 font-black">R$ 140,00</span>
               </li>
               <li className="flex items-center justify-between text-slate-900 font-bold">
                 <span className="flex items-center gap-1.5">
                   <Disc className="h-3.5 w-3.5 text-blue-600" />
-                  Pneu Piremax
+                  Pneu Piremax Aro 15
                 </span>
-                <span className="text-red-600 font-black">R$ 281,08</span>
+                <span className="text-red-600 font-black">R$ 280,00</span>
               </li>
               <li className="flex items-center justify-between text-slate-900 font-bold">
                 <span className="flex items-center gap-1.5">
                   <Droplet className="h-3.5 w-3.5 text-amber-600" />
-                  Kit Óleo 15w40 + Filtros Lubrax
+                  Troca de Óleo (04L) + Filtro
                 </span>
-                <span className="text-amber-600 font-black">R$ 252,40</span>
+                <span className="text-amber-600 font-black">R$ 255,00</span>
               </li>
               <li className="flex items-center justify-between text-slate-600">
                 <span className="flex items-center gap-1.5">
                   <Wrench className="h-3.5 w-3.5 text-red-600" />
                   Retífica & Motor na Bancada
                 </span>
-                <span className="text-xs text-blue-700 font-bold">Sob consulta</span>
+                <span className="text-[11px] text-blue-700 font-bold">Consultar</span>
               </li>
               <li className="flex items-center justify-between text-slate-600">
                 <span className="flex items-center gap-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
                   Demais Serviços
                 </span>
-                <span className="text-xs text-emerald-700 font-bold">Consultar</span>
+                <span className="text-[11px] text-emerald-700 font-bold">21-964122372 / 33811320</span>
               </li>
             </ul>
           </div>
@@ -177,7 +177,7 @@ export const Footer: React.FC<FooterProps> = ({
                 className="flex items-center gap-2 text-blue-700 hover:text-blue-900 font-bold transition-colors"
               >
                 <Phone className="h-4 w-4 text-blue-600" />
-                <span>Fixo: {SHOP_CONTACT_INFO.phoneLandline}</span>
+                <span>Loja: {SHOP_CONTACT_INFO.phoneLandline}</span>
               </a>
 
               {/* Email */}

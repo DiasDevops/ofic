@@ -75,7 +75,7 @@ export const StorefrontBanner: React.FC<StorefrontBannerProps> = ({
               className="inline-flex items-center gap-2 rounded-xl border-2 border-blue-600 bg-white px-4 py-2 text-xs sm:text-sm font-black text-blue-700 shadow-sm hover:bg-blue-50 transition-all"
             >
               <Phone className="h-4 w-4 text-blue-600" />
-              <span>Fixo: {SHOP_CONTACT_INFO.phoneLandline}</span>
+              <span>Loja: {SHOP_CONTACT_INFO.phoneLandline}</span>
             </a>
           </div>
         </div>
@@ -151,13 +151,13 @@ export const StorefrontBanner: React.FC<StorefrontBannerProps> = ({
                 <div className="pt-3 border-t border-slate-100 flex items-end justify-between gap-2">
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 block uppercase">
-                      {promo.priceHighlight.includes('R$') ? 'Valor Especial' : 'Condição'}
+                      {promo.priceHighlight.startsWith('R$') ? 'Valor Especial' : 'Condição'}
                     </span>
                     <span
                       className={`font-heading font-black leading-snug block ${
-                        promo.priceHighlight.includes('R$')
+                        promo.priceHighlight.startsWith('R$')
                           ? 'text-xl text-red-600'
-                          : 'text-xs text-blue-700 max-w-[140px]'
+                          : 'text-xs text-blue-900 max-w-[170px]'
                       }`}
                     >
                       {promo.priceHighlight}

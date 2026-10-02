@@ -43,15 +43,17 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   });
 
   const [confirmedOrder, setConfirmedOrder] = useState<VehicleOrder | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.ownerName || !formData.vehicleModel || !formData.vehiclePlate) {
-      alert('Por favor, preencha o seu nome, modelo do veículo e placa.');
+      setErrorMessage('Por favor, preencha o seu nome, modelo do veículo e placa.');
       return;
     }
+    setErrorMessage(null);
 
     const selectedService = DIVERSIFIED_SERVICES.find((s) => s.id === formData.serviceId) || DIVERSIFIED_SERVICES[0];
     const generatedOsNumber = `OS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -107,19 +109,37 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
         {confirmedOrder ? (
           /* Confirmation Success State */
-          <div className="text-center py-6 space-y-4 animate-in zoom-in-95">
+          <div className="text-center py-4 space-y-4 animate-in zoom-in-95">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 ring-8 ring-emerald-50">
               <CheckCircle2 className="h-10 w-10" />
             </div>
 
-            <h3 className="font-heading text-2xl font-black text-slate-900">
-              Agendamento Confirmado com Sucesso!
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-md mx-auto">
-              Sua Ordem de Serviço foi gerada. Leve seu veículo até a <strong className="text-slate-900">Av. Vicente de Carvalho, 730</strong> no horário agendado.
-            </p>
+            <div>
+              <h3 className="font-heading text-2xl font-black text-slate-900">
+                Agendamento Confirmado com Sucesso!
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-md mx-auto mt-1">
+                Sua Ordem de Serviço foi gerada. Envie a notificação diretamente para a equipe da Jomano:
+              </p>
+            </div>
 
-            <div className="my-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left max-w-md mx-auto space-y-2 text-xs">
+            {/* Notification destination banner */}
+            <div className="rounded-2xl border-2 border-emerald-400 bg-emerald-50 p-3 max-w-md mx-auto text-left text-xs space-y-1">
+              <span className="font-black text-emerald-900 block text-[11px] uppercase tracking-wider">
+                Canais de Envio Oficial da Oficina:
+              </span>
+              <p className="text-slate-700">
+                📱 <strong>WhatsApp da Loja:</strong> 21-964122372 (Fixo Loja: 33811320)
+              </p>
+              <p className="text-slate-700">
+                ✉️ <strong>E-mail da Loja:</strong> jomanocentroautomotivo@gmail.com
+              </p>
+              <p className="text-emerald-950 font-semibold text-[11px] pt-1.5 border-t border-emerald-200">
+                🔒 <strong>Privacidade Garantida:</strong> Os dados do seu veículo e telefone são enviados com segurança para a loja e ficam ocultos na consulta pública da OS.
+              </p>
+            </div>
+
+            <div className="my-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left max-w-md mx-auto space-y-2 text-xs">
               <div className="flex justify-between border-b border-slate-200 pb-2">
                 <span className="text-slate-500 font-bold">Número da OS:</span>
                 <span className="font-mono font-black text-blue-700">{confirmedOrder.id}</span>
@@ -142,26 +162,72 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-              <a
-                href={`https://wa.me/${SHOP_CONTACT_INFO.whatsappRaw}?text=${encodeURIComponent(
-                  `Olá Jomano Auto Serviço! Confirmei meu agendamento da OS ${confirmedOrder.id} para o veículo ${confirmedOrder.vehicleModel} (${confirmedOrder.plate}) na Av. Vicente de Carvalho, 730.`
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-xs font-black text-white hover:bg-emerald-500 transition-all shadow-md shadow-emerald-700/20"
-              >
-                <Send className="h-4 w-4" />
-                <span>Enviar no WhatsApp ({SHOP_CONTACT_INFO.whatsapp})</span>
-              </a>
+            {/* Direct Send Action Buttons for WhatsApp AND Email */}
+            {(() => {
+              const whatsappBookingMessage = `*NOVO AGENDAMENTO - JOMANO AUTO SERVIÇO*
+📋 *OS:* ${confirmedOrder.id}
+👤 *Cliente:* ${confirmedOrder.ownerName}
+📞 *Telefone:* ${confirmedOrder.ownerPhone}
+🚗 *Veículo:* ${confirmedOrder.vehicleModel}
+🔢 *Placa:* ${confirmedOrder.plate}
+🔧 *Serviço:* ${confirmedOrder.serviceRequested}
+📅 *Data & Horário:* ${confirmedOrder.entryDate}
+📍 *Local:* Av. Vicente de Carvalho, 730 - RJ 21210-000`;
 
-              <button
-                onClick={handleResetAndClose}
-                className="w-full sm:w-auto rounded-xl bg-blue-600 px-6 py-3 text-xs font-black text-white hover:bg-blue-700 transition-all"
-              >
-                Acompanhar na Linha do Tempo
-              </button>
-            </div>
+              const emailSubject = `Novo Agendamento: OS ${confirmedOrder.id} - ${confirmedOrder.vehicleModel} (${confirmedOrder.plate})`;
+              const emailBody = `Olá equipe Jomano Centro Automotivo,
+
+Novo agendamento realizado pelo site:
+
+• Número da OS: ${confirmedOrder.id}
+• Nome do Cliente: ${confirmedOrder.ownerName}
+• Telefone/WhatsApp: ${confirmedOrder.ownerPhone}
+• Veículo: ${confirmedOrder.vehicleModel}
+• Placa: ${confirmedOrder.plate}
+• Serviço Solicitado: ${confirmedOrder.serviceRequested}
+• Data e Horário Previsto: ${confirmedOrder.entryDate}
+• Local: Av. Vicente de Carvalho, 730 - Rio de Janeiro (RJ 21210-000)
+
+Demais preços consultar: 21-964122372 / Loja 33811320.`;
+
+              const whatsappUrl = `https://wa.me/${SHOP_CONTACT_INFO.whatsappRaw}?text=${encodeURIComponent(whatsappBookingMessage)}`;
+              const mailtoUrl = `mailto:jomanocentroautomotivo@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+              return (
+                <div className="space-y-2.5 max-w-md mx-auto pt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {/* Send to WhatsApp */}
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      id="booking-send-whatsapp-btn"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-xs font-black text-white hover:bg-emerald-500 transition-all shadow-md shadow-emerald-700/20 active:scale-95"
+                    >
+                      <Send className="h-4 w-4" />
+                      <span>Enviar no WhatsApp</span>
+                    </a>
+
+                    {/* Send to Email */}
+                    <a
+                      href={mailtoUrl}
+                      id="booking-send-email-btn"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-3 text-xs font-black text-white hover:bg-blue-600 transition-all shadow-md shadow-blue-800/20 active:scale-95"
+                    >
+                      <Mail className="h-4 w-4" />
+                      <span>Enviar por E-mail</span>
+                    </a>
+                  </div>
+
+                  <button
+                    onClick={handleResetAndClose}
+                    className="w-full rounded-xl border-2 border-slate-300 hover:border-slate-400 bg-white px-5 py-2.5 text-xs font-black text-slate-800 hover:bg-slate-50 transition-all"
+                  >
+                    Acompanhar Status na Linha do Tempo
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         ) : (
           /* Main Booking Form */
@@ -174,11 +240,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 Agendamento de Horário & Reserva de Box
               </h3>
               <p className="text-xs text-slate-500 font-medium">
-                Pátio Av. Vicente de Carvalho, 730 • RJ 21210-000 • Tel: {SHOP_CONTACT_INFO.phoneLandline} | WhatsApp: {SHOP_CONTACT_INFO.whatsapp}
+                Pátio Av. Vicente de Carvalho, 730 • RJ 21210-000 • WhatsApp: {SHOP_CONTACT_INFO.whatsapp} | Loja: {SHOP_CONTACT_INFO.phoneLandline} • E-mail: {SHOP_CONTACT_INFO.email}
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+              {errorMessage && (
+                <div className="rounded-xl border-2 border-red-300 bg-red-50 p-3 text-xs font-bold text-red-700">
+                  {errorMessage}
+                </div>
+              )}
               {/* Service Selection */}
               <div>
                 <label className="block text-xs font-black uppercase tracking-wider text-slate-800 mb-2">

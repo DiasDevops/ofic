@@ -63,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
 
         <p className="text-sm sm:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
-          O melhor atendimento na <strong className="text-slate-900 font-bold">Av. Vicente de Carvalho, 730</strong> (RJ 21210-000). Agendamento com acompanhamento em tempo real: <strong className="text-red-600 font-bold">Pneu Piremax por R$ 281,08</strong>, <strong className="text-blue-700 font-bold">Alinhamento e Balanceamento por R$ 100,00</strong>, e <strong className="text-amber-600 font-bold">Kit Óleo Semissintético 15w40 com Filtros Lubrax por R$ 252,40</strong> (demais serviços sob consulta na loja ou no WhatsApp).
+          O melhor atendimento na <strong className="text-slate-900 font-bold">Av. Vicente de Carvalho, 730</strong> (RJ 21210-000). Agendamento com acompanhamento em tempo real: <strong className="text-blue-700 font-bold">Alinhamento e Balanceamentos em rodas de ferro por R$ 140,00</strong>, <strong className="text-red-600 font-bold">Pneu Piremax aro 15 por R$ 280 a unidade</strong>, e <strong className="text-amber-600 font-bold">Troca de Óleo (04 litros) + filtro de óleo por R$ 255,00</strong> (demais preços consultar: 21-964122372 / loja 33811320).
         </p>
 
         {/* Contact Chips with WhatsApp & Rio Phones */}
@@ -87,7 +87,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="inline-flex items-center gap-2 rounded-2xl border-2 border-blue-600 bg-white px-4 py-2 text-xs sm:text-sm font-black text-blue-700 hover:bg-blue-50 transition-all"
           >
             <Phone className="h-4 w-4 text-blue-600" />
-            <span>Fixo: {SHOP_CONTACT_INFO.phoneLandline}</span>
+            <span>Loja: {SHOP_CONTACT_INFO.phoneLandline}</span>
           </a>
 
           <a
@@ -135,23 +135,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Quick Highlights Bar with Vivid Daylight Styling */}
         <div className="pt-6 border-t border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
           <div className="p-3.5 rounded-2xl bg-blue-50/70 border-2 border-blue-200 hover:border-blue-500 shadow-xs hover:shadow-md transition-all">
-            <span className="font-heading text-xl font-black text-blue-700 block">R$ 100,00</span>
-            <span className="text-[11px] font-bold text-slate-700">Alinhamento e Balanceamento</span>
+            <span className="font-heading text-xl font-black text-blue-700 block">R$ 140,00</span>
+            <span className="text-[11px] font-bold text-slate-700">Alinhamento e Balanceamentos (Roda Ferro)</span>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-red-50/70 border-2 border-red-200 hover:border-red-500 shadow-xs hover:shadow-md transition-all">
-            <span className="font-heading text-xl font-black text-red-600 block">R$ 281,08</span>
-            <span className="text-[11px] font-bold text-slate-700">Pneu Piremax Ecológico</span>
+            <span className="font-heading text-xl font-black text-red-600 block">R$ 280,00</span>
+            <span className="text-[11px] font-bold text-slate-700">Pneu Piremax Aro 15 (Unidade)</span>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-amber-50/70 border-2 border-amber-200 hover:border-amber-500 shadow-xs hover:shadow-md transition-all">
-            <span className="font-heading text-xl font-black text-amber-700 block">R$ 252,40</span>
-            <span className="text-[11px] font-bold text-slate-700">Kit Óleo 15w40 + Filtros Lubrax</span>
+            <span className="font-heading text-xl font-black text-amber-700 block">R$ 255,00</span>
+            <span className="text-[11px] font-bold text-slate-700">Troca de Óleo (04L) + Filtro</span>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-emerald-50/70 border-2 border-emerald-200 hover:border-emerald-500 shadow-xs hover:shadow-md transition-all">
-            <span className="font-heading text-sm font-black text-emerald-800 block uppercase pt-0.5">WhatsApp / Loja</span>
-            <span className="text-[11px] font-bold text-emerald-700">Demais Preços: Consultar</span>
+            <span className="text-[10px] font-extrabold text-emerald-800 uppercase block">Demais Preços Consultar:</span>
+            <span className="font-heading text-xs sm:text-sm font-black text-emerald-950 block">21-964122372</span>
+            <span className="text-[10px] font-bold text-emerald-800 block">Loja: 33811320</span>
           </div>
         </div>
       </div>
