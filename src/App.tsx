@@ -29,6 +29,7 @@ import { Footer } from './components/Footer';
 import { AdminPanel } from './components/AdminPanel';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { isAdminAuthenticated, setAdminAuthenticated } from './utils/auth';
+import { ShopLocationMap } from './components/ShopLocationMap';
 import { 
   db, 
   saveVehicleToFirestore, 
@@ -57,6 +58,18 @@ export default function App() {
   });
 
   const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(false);
+  const [isMapsQuotaExceeded, setIsMapsQuotaExceeded] = useState<boolean>(false);
+
+  // Google Maps Platform Tier 1 / Tier 2 Quota Listener
+  useEffect(() => {
+    const onQuotaExceeded = () => {
+      setIsMapsQuotaExceeded(true);
+    };
+    window.addEventListener('gmp-quota-exceeded', onQuotaExceeded);
+    return () => {
+      window.removeEventListener('gmp-quota-exceeded', onQuotaExceeded);
+    };
+  }, []);
 
   // Initialize Firebase and listen for real-time cloud updates across devices
   useEffect(() => {
@@ -297,6 +310,7 @@ export default function App() {
     if (sectionId === 'engine-bench') targetEl = document.getElementById('engine-bench-section');
     if (sectionId === 'services') targetEl = document.getElementById('services-section');
     if (sectionId === 'history') targetEl = document.getElementById('history-section');
+    if (sectionId === 'map') targetEl = document.getElementById('localizacao-section');
 
     if (targetEl) {
       targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -321,6 +335,24 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans selection:bg-red-600 selection:text-white">
+      {/* Google Maps Quota Reached Notification (Case A Demo Key) */}
+      {isMapsQuotaExceeded && (
+        <div className="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2.5 text-xs md:text-sm text-center sticky top-0 z-50 shadow-sm">
+          <span>
+            Google Maps Platform quota reached. If you are the app owner, visit{' '}
+            <a
+              href="https://developers.google.com/maps/ai/ai-studio?utm_campaign=gmp_mcp_codeassist_v1_aistudio#quota_exceeded_errors"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline font-semibold text-amber-950 hover:text-amber-800"
+            >
+              maps developer site
+            </a>{' '}
+            for instructions to update your account.
+          </span>
+        </div>
+      )}
+
       {/* Real-time Toast Notifications */}
       <NotificationToast
         toast={activeToast}
@@ -418,6 +450,9 @@ export default function App() {
               }}
               isShopMode={isShopMode || isAdminLoggedIn}
             />
+
+            {/* 7. LOCALIZAÇÃO OFICIAL & COMO CHEGAR (GOOGLE MAPS) */}
+            <ShopLocationMap />
           </>
         )}
       </main>

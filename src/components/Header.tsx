@@ -51,6 +51,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'engine-bench', label: 'Motor na Bancada', shortLabel: 'Motor Bancada' },
     { id: 'services', label: 'Serviços & Pneus', shortLabel: 'Serviços' },
     { id: 'history', label: 'Histórico de Reparos', shortLabel: 'Histórico' },
+    { id: 'map', label: 'Como Chegar (Mapa)', shortLabel: 'Mapa' },
   ];
 
   return (
