@@ -29,6 +29,14 @@ import { Footer } from './components/Footer';
 import { AdminPanel } from './components/AdminPanel';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { isAdminAuthenticated, setAdminAuthenticated } from './utils/auth';
+import { 
+  db, 
+  saveVehicleToFirestore, 
+  updateVehicleStatusInFirestore, 
+  seedInitialVehiclesIfEmpty, 
+  testFirestoreConnection 
+} from './services/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 export default function App() {
   // Application persistent state
@@ -47,6 +55,47 @@ export default function App() {
   const [selectedVehicleId, setSelectedVehicleId] = useState<string>(() => {
     return vehicles[0]?.id || INITIAL_VEHICLES_IN_SHOP[0].id;
   });
+
+  const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(false);
+
+  // Initialize Firebase and listen for real-time cloud updates across devices
+  useEffect(() => {
+    let isMounted = true;
+
+    testFirestoreConnection().then((connected) => {
+      if (isMounted) setIsFirebaseConnected(connected);
+    });
+
+    seedInitialVehiclesIfEmpty(INITIAL_VEHICLES_IN_SHOP);
+
+    const unsubscribe = onSnapshot(
+      collection(db, 'vehicles'),
+      (snapshot) => {
+        if (!snapshot.empty && isMounted) {
+          const cloudOrders: VehicleOrder[] = [];
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data() as VehicleOrder;
+            if (data && data.id && data.plate) {
+              cloudOrders.push(data);
+            }
+          });
+
+          if (cloudOrders.length > 0) {
+            setVehicles(cloudOrders);
+            setIsFirebaseConnected(true);
+          }
+        }
+      },
+      (error) => {
+        console.warn('Firestore snapshot listener (using local storage fallback):', error);
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, []);
 
   const [notifications, setNotifications] = useState<AppNotification[]>(() => {
     const saved = localStorage.getItem('jomano_notifications_v3');
@@ -182,6 +231,15 @@ export default function App() {
           order.id
         );
 
+        // Sync status to Firestore Cloud
+        updateVehicleStatusInFirestore(order.id, {
+          currentStage: nextStage,
+          stageProgressPercent: newProgress,
+          liveNotes: [newNote, ...order.liveNotes],
+        }).catch((err) => {
+          console.warn('Status updated locally, cloud sync pending:', err);
+        });
+
         return {
           ...order,
           currentStage: nextStage,
@@ -197,6 +255,11 @@ export default function App() {
     setVehicles((prev) => [newOrder, ...prev]);
     setSelectedVehicleId(newOrder.id);
     setActiveSection('tracker');
+
+    // Save to Firestore Cloud Database
+    saveVehicleToFirestore(newOrder).catch((err) => {
+      console.warn('Saved to local storage, cloud sync pending:', err);
+    });
 
     dispatchAutomaticNotification(
       `Novo Agendamento Confirmado (${newOrder.plate})`,
@@ -291,6 +354,7 @@ export default function App() {
               handleNavigate('tracker');
             }}
             onReturnToPublicSite={() => handleNavigate('tracker')}
+            isFirebaseConnected={isFirebaseConnected}
           />
         ) : (
           <>

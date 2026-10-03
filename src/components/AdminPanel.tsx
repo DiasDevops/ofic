@@ -24,7 +24,12 @@ import {
   Printer, 
   Search,
   Wrench,
-  Car
+  Car,
+  Database,
+  Download,
+  HardDrive,
+  FileSpreadsheet,
+  Server
 } from 'lucide-react';
 
 interface AdminPanelProps {
@@ -32,6 +37,7 @@ interface AdminPanelProps {
   onSimulateStatusAdvance: (orderId: string) => void;
   onLogout: () => void;
   onReturnToPublicSite: () => void;
+  isFirebaseConnected?: boolean;
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({
@@ -39,10 +45,71 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   onSimulateStatusAdvance,
   onLogout,
   onReturnToPublicSite,
+  isFirebaseConnected = true,
 }) => {
-  const [activeTab, setActiveTab] = useState<'orders' | 'os-document' | 'security' | 'pricing'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'os-document' | 'database' | 'security' | 'pricing'>('orders');
   const [selectedVehicleId, setSelectedVehicleId] = useState<string>(vehicles[0]?.id || '');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Export CSV helper
+  const handleExportCSV = () => {
+    const headers = [
+      'Numero_OS',
+      'Placa',
+      'Veiculo',
+      'Marca',
+      'Ano',
+      'Cor',
+      'Proprietario',
+      'Telefone',
+      'Servico_Solicitado',
+      'Data_Entrada',
+      'Previsao_Entrega',
+      'Status_Atual',
+      'Mecanico_Responsavel',
+      'Valor_Total_Estimado'
+    ];
+
+    const rows = vehicles.map((v) => [
+      v.id,
+      v.plate,
+      `"${v.vehicleModel.replace(/"/g, '""')}"`,
+      `"${v.vehicleBrand}"`,
+      v.year,
+      `"${v.color}"`,
+      `"${v.ownerName.replace(/"/g, '""')}"`,
+      `"${v.ownerPhone}"`,
+      `"${v.serviceRequested.replace(/"/g, '""')}"`,
+      `"${v.entryDate}"`,
+      `"${v.estimatedCompletion}"`,
+      v.currentStage,
+      `"${v.mechanicInCharge.name}"`,
+      v.totalEstimate
+    ]);
+
+    const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map((r) => r.join(';'))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `banco_dados_os_jomano_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Export JSON backup helper
+  const handleExportJSON = () => {
+    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(vehicles, null, 2)
+    )}`;
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', jsonString);
+    downloadAnchor.setAttribute('download', `backup_banco_dados_jomano_${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
   
   // Password change form state
   const [currentPassword, setCurrentPassword] = useState('');
@@ -117,6 +184,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <ShieldCheck className="h-3.5 w-3.5" />
                 Sessão Autenticada
               </span>
+              <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold flex items-center gap-1 border ${
+                isFirebaseConnected 
+                  ? 'bg-blue-500/20 border-blue-400 text-blue-300' 
+                  : 'bg-amber-500/20 border-amber-400 text-amber-300'
+              }`}>
+                <Database className="h-3.5 w-3.5" />
+                {isFirebaseConnected ? 'Firebase Nuvem Conectado' : 'Banco Local Sincronizado'}
+              </span>
             </div>
             
             <h1 className="font-heading text-2xl sm:text-4xl font-black tracking-tight text-white">
@@ -171,6 +246,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           >
             <FileText className="h-4 w-4" />
             <span>Espelho da OS Oficial</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('database')}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-extrabold transition-all ${
+              activeTab === 'database'
+                ? 'bg-amber-500 text-slate-950 shadow-md'
+                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+            }`}
+          >
+            <Database className="h-4 w-4" />
+            <span>Banco de Dados & Exportar</span>
           </button>
 
           <button
@@ -710,7 +797,152 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         </div>
       )}
 
-      {/* TAB 3: SEGURANÇA & LOCAL PARA TROCAR A SENHA DO ADMINISTRADOR */}
+      {/* TAB 3: BANCO DE DADOS & EXPORTAR */}
+      {activeTab === 'database' && (
+        <div className="space-y-6">
+          {/* Header Card */}
+          <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 space-y-4 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500 text-slate-950 shadow-xs">
+                  <Database className="h-6 w-6" />
+                </div>
+                <div>
+                  <h2 className="font-heading text-xl sm:text-2xl font-black text-slate-900">
+                    Onde os dados ficam registrados e como acessar
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                    Central de controle e visualização do armazenamento e histórico da oficina.
+                  </p>
+                </div>
+              </div>
+
+              {/* Export Buttons */}
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleExportCSV}
+                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 text-xs font-black shadow-sm active:scale-95 transition-all"
+                >
+                  <FileSpreadsheet className="h-4 w-4" />
+                  <span>Baixar em Excel (CSV)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleExportJSON}
+                  className="inline-flex items-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 text-xs font-black shadow-sm active:scale-95 transition-all"
+                >
+                  <Download className="h-4 w-4" />
+                  <span>Exportar Backup (JSON)</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 3 Storage Destinations Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+              {/* Destination 1 */}
+              <div className="rounded-2xl border-2 border-blue-200 bg-blue-50/60 p-4 space-y-2">
+                <div className="flex items-center gap-2 text-blue-900 font-black text-xs uppercase tracking-wide">
+                  <HardDrive className="h-4 w-4 text-blue-700" />
+                  <span>1. Banco de Dados da Loja</span>
+                </div>
+                <div className="text-xs space-y-1 text-slate-700">
+                  <p><strong>Onde fica:</strong> No armazenamento local persistente do sistema (<code className="bg-white px-1 py-0.5 rounded text-[11px] font-mono text-blue-800">localStorage</code>).</p>
+                  <p><strong>Como acessar:</strong> Diretamente neste Painel do Administrador (Modo Oficina) usando sua senha de acesso.</p>
+                  <p className="text-blue-950 font-bold pt-1">Total: {vehicles.length} Ordens de Serviço salvas.</p>
+                </div>
+              </div>
+
+              {/* Destination 2 */}
+              <div className="rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-4 space-y-2">
+                <div className="flex items-center gap-2 text-emerald-900 font-black text-xs uppercase tracking-wide">
+                  <Phone className="h-4 w-4 text-emerald-700" />
+                  <span>2. WhatsApp da Oficina</span>
+                </div>
+                <div className="text-xs space-y-1 text-slate-700">
+                  <p><strong>Onde fica:</strong> No número oficial da recepção da loja: <strong className="text-emerald-800 font-mono">21-964122372</strong>.</p>
+                  <p><strong>Como acessar:</strong> Abra o aplicativo do WhatsApp no celular ou no computador da recepção.</p>
+                  <p className="text-emerald-950 font-bold pt-1">Histórico completo com nome, placa e horário.</p>
+                </div>
+              </div>
+
+              {/* Destination 3 */}
+              <div className="rounded-2xl border-2 border-amber-200 bg-amber-50/60 p-4 space-y-2">
+                <div className="flex items-center gap-2 text-amber-900 font-black text-xs uppercase tracking-wide">
+                  <Send className="h-4 w-4 text-amber-700" />
+                  <span>3. E-mail Oficial da Loja</span>
+                </div>
+                <div className="text-xs space-y-1 text-slate-700">
+                  <p><strong>Onde fica:</strong> Na caixa de entrada do Gmail: <strong className="text-slate-900 break-all">jomanocentroautomotivo@gmail.com</strong>.</p>
+                  <p><strong>Como acessar:</strong> Acesse o Gmail com a conta da oficina em qualquer dispositivo.</p>
+                  <p className="text-amber-950 font-bold pt-1">Comprovantes formais de agendamento arquivados.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Database Table Viewer */}
+          <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <span className="font-heading text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                <Server className="h-4 w-4 text-blue-600" />
+                Registros Atuais no Banco de Dados ({vehicles.length})
+              </span>
+              <span className="text-xs text-slate-500 font-medium">
+                Atualizado em tempo real • Clique em "Baixar em Excel" para extrair
+              </span>
+            </div>
+
+            <div className="overflow-x-auto rounded-2xl border border-slate-200">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-100 text-slate-700 font-black uppercase text-[10px] border-b border-slate-200">
+                  <tr>
+                    <th className="p-3">Número OS</th>
+                    <th className="p-3">Placa</th>
+                    <th className="p-3">Veículo / Modelo</th>
+                    <th className="p-3">Cliente</th>
+                    <th className="p-3">Telefone</th>
+                    <th className="p-3">Serviço</th>
+                    <th className="p-3">Data / Hora</th>
+                    <th className="p-3">Status</th>
+                    <th className="p-3 text-right">Valor Orçado</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
+                  {vehicles.map((v) => (
+                    <tr key={v.id} className="hover:bg-slate-50">
+                      <td className="p-3 font-mono font-black text-blue-700">{v.id}</td>
+                      <td className="p-3 font-mono font-black text-slate-900">{v.plate}</td>
+                      <td className="p-3 font-bold text-slate-900">{v.vehicleModel}</td>
+                      <td className="p-3">{v.ownerName}</td>
+                      <td className="p-3 font-mono text-emerald-800">{v.ownerPhone}</td>
+                      <td className="p-3 font-semibold text-slate-700">{v.serviceRequested}</td>
+                      <td className="p-3 text-slate-500 whitespace-nowrap">{v.entryDate}</td>
+                      <td className="p-3">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                          v.currentStage === 'pronto'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : v.currentStage === 'execucao'
+                            ? 'bg-amber-100 text-amber-800'
+                            : 'bg-blue-100 text-blue-800'
+                        }`}>
+                          {v.currentStage}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right font-mono font-bold text-emerald-700">
+                        R$ {v.totalEstimate.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 4: SEGURANÇA & LOCAL PARA TROCAR A SENHA DO ADMINISTRADOR */}
       {activeTab === 'security' && (
         <div className="max-w-2xl mx-auto space-y-6">
           <div className="rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-md space-y-6">

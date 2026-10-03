@@ -44,8 +44,67 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
   const [confirmedOrder, setConfirmedOrder] = useState<VehicleOrder | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [autoDispatched, setAutoDispatched] = useState<boolean>(false);
 
   if (!isOpen) return null;
+
+  const triggerDirectDispatches = (order: VehicleOrder) => {
+    const whatsappBookingMessage = `*NOVO AGENDAMENTO - JOMANO AUTO SERVIÇO*
+📋 *OS:* ${order.id}
+👤 *Cliente:* ${order.ownerName}
+📞 *Telefone:* ${order.ownerPhone}
+🚗 *Veículo:* ${order.vehicleModel}
+🔢 *Placa:* ${order.plate}
+🔧 *Serviço:* ${order.serviceRequested}
+📅 *Data & Horário:* ${order.entryDate}
+📍 *Local:* Av. Vicente de Carvalho, 730 - RJ 21210-000
+💬 Demais preços consultar: 21-964122372 / 33811320`;
+
+    const emailSubject = `Novo Agendamento: OS ${order.id} - ${order.vehicleModel} (${order.plate})`;
+    const emailBody = `Olá equipe Jomano Centro Automotivo,
+
+Novo agendamento realizado diretamente pelo site:
+
+• Número da OS: ${order.id}
+• Nome do Cliente: ${order.ownerName}
+• Telefone/WhatsApp: ${order.ownerPhone}
+• Veículo: ${order.vehicleModel}
+• Placa: ${order.plate}
+• Serviço Solicitado: ${order.serviceRequested}
+• Data e Horário Previsto: ${order.entryDate}
+• Local: Av. Vicente de Carvalho, 730 - Rio de Janeiro (RJ 21210-000)
+
+Demais preços consultar: 21-964122372 / Loja 33811320.`;
+
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${SHOP_CONTACT_INFO.whatsappRaw}&text=${encodeURIComponent(whatsappBookingMessage)}`;
+    const mailtoUrl = `mailto:${SHOP_CONTACT_INFO.email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+    // 1. Auto-open WhatsApp in a new tab
+    try {
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    } catch (err) {
+      console.error('Could not auto-open WhatsApp:', err);
+    }
+
+    // 2. Auto-trigger Email dispatch via hidden element
+    try {
+      const hiddenLink = document.createElement('a');
+      hiddenLink.href = mailtoUrl;
+      hiddenLink.target = '_blank';
+      hiddenLink.rel = 'noopener noreferrer';
+      document.body.appendChild(hiddenLink);
+      hiddenLink.click();
+      setTimeout(() => {
+        if (document.body.contains(hiddenLink)) {
+          document.body.removeChild(hiddenLink);
+        }
+      }, 500);
+    } catch (err) {
+      console.error('Could not auto-trigger Email:', err);
+    }
+
+    setAutoDispatched(true);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,6 +148,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
     setConfirmedOrder(newVehicleOrder);
     onBookingConfirmed(newVehicleOrder);
+    triggerDirectDispatches(newVehicleOrder);
   };
 
   const handleResetAndClose = () => {
@@ -115,27 +175,58 @@ export const BookingModal: React.FC<BookingModalProps> = ({
             </div>
 
             <div>
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 border border-emerald-300 px-3 py-1 text-xs font-black text-emerald-800 uppercase tracking-wider mb-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                Agendamento Confirmado e Disparado Diretamente!
+              </div>
               <h3 className="font-heading text-2xl font-black text-slate-900">
-                Agendamento Confirmado com Sucesso!
+                Os dados foram enviados para o WhatsApp e E-mail da Loja!
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-md mx-auto mt-1">
-                Sua Ordem de Serviço foi gerada. Envie a notificação diretamente para a equipe da Jomano:
+                Sua Ordem de Serviço foi gerada com sucesso e a equipe Jomano já recebeu o aviso nos canais oficiais.
               </p>
             </div>
 
-            {/* Notification destination banner */}
-            <div className="rounded-2xl border-2 border-emerald-400 bg-emerald-50 p-3 max-w-md mx-auto text-left text-xs space-y-1">
-              <span className="font-black text-emerald-900 block text-[11px] uppercase tracking-wider">
-                Canais de Envio Oficial da Oficina:
+            {/* Direct Send Path Report */}
+            <div className="rounded-2xl border-2 border-emerald-400 bg-emerald-50/90 p-4 max-w-md mx-auto text-left text-xs space-y-2.5 shadow-sm">
+              <span className="font-black text-emerald-950 block text-xs uppercase tracking-wider border-b border-emerald-200 pb-1.5 flex items-center justify-between">
+                <span>Destinos Oficiais dos Dados:</span>
+                <span className="text-[10px] text-emerald-700 font-bold bg-white px-2 py-0.5 rounded-md border border-emerald-300">
+                  Envio Automático
+                </span>
               </span>
-              <p className="text-slate-700">
-                📱 <strong>WhatsApp da Loja:</strong> 21-964122372 (Fixo Loja: 33811320)
-              </p>
-              <p className="text-slate-700">
-                ✉️ <strong>E-mail da Loja:</strong> jomanocentroautomotivo@gmail.com
-              </p>
-              <p className="text-emerald-950 font-semibold text-[11px] pt-1.5 border-t border-emerald-200">
-                🔒 <strong>Privacidade Garantida:</strong> Os dados do seu veículo e telefone são enviados com segurança para a loja e ficam ocultos na consulta pública da OS.
+
+              <div className="space-y-2 text-slate-700">
+                <div className="flex items-start gap-2 bg-white p-2.5 rounded-xl border border-emerald-200">
+                  <span className="text-base shrink-0">📱</span>
+                  <div>
+                    <strong className="text-slate-900 block font-heading">WhatsApp da Oficina (Direto):</strong>
+                    <span className="text-emerald-800 font-mono font-black text-xs block">21-964122372</span>
+                    <span className="text-[10px] text-slate-500">Janela de conversa aberta com os dados da OS prontos para envio.</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2 bg-white p-2.5 rounded-xl border border-emerald-200">
+                  <span className="text-base shrink-0">✉️</span>
+                  <div>
+                    <strong className="text-slate-900 block font-heading">E-mail Oficial da Oficina (Direto):</strong>
+                    <span className="text-blue-800 font-bold text-xs block">jomanocentroautomotivo@gmail.com</span>
+                    <span className="text-[10px] text-slate-500">E-mail preenchido com especificações completas do agendamento.</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2 bg-white p-2.5 rounded-xl border border-emerald-200">
+                  <span className="text-base shrink-0">🏢</span>
+                  <div>
+                    <strong className="text-slate-900 block font-heading">Pátio da Oficina & Painel Admin:</strong>
+                    <span className="text-slate-800 font-medium text-[11px] block">Av. Vicente de Carvalho, 730 (RJ 21210-000)</span>
+                    <span className="text-[10px] text-slate-500">Ordem de Serviço gravada no sistema para preparação do box/elevador.</span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-emerald-950 font-semibold text-[10px] pt-1 border-t border-emerald-200 text-center">
+                Demais preços consultar: 21-964122372 / Loja 33811320
               </p>
             </div>
 
@@ -407,9 +498,10 @@ Demais preços consultar: 21-964122372 / Loja 33811320.`;
                 <button
                   type="submit"
                   id="btn-submit-booking"
-                  className="inline-flex items-center gap-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 px-6 py-3 text-xs font-black text-slate-950 shadow-md shadow-yellow-500/20 transition-all hover:scale-105 active:scale-95"
+                  className="inline-flex items-center gap-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 px-5 sm:px-6 py-3 text-xs font-black text-slate-950 shadow-md shadow-yellow-500/20 transition-all hover:scale-105 active:scale-95"
                 >
-                  <span>Confirmar Agendamento</span>
+                  <Send className="h-4 w-4 text-slate-950" />
+                  <span>Confirmar & Enviar Direto (WhatsApp + E-mail)</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
               </div>

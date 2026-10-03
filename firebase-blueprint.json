@@ -1,0 +1,138 @@
+{
+  "entities": {
+    "VehicleOrder": {
+      "title": "VehicleOrder",
+      "description": "Ordem de Serviço e dados do veículo no pátio da Jomano Centro Automotivo",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Identificador da Ordem de Serviço (ex: OS-2026-8942)",
+          "maxLength": 64
+        },
+        "plate": {
+          "type": "string",
+          "description": "Placa do veículo",
+          "maxLength": 16
+        },
+        "vehicleModel": {
+          "type": "string",
+          "description": "Modelo do veículo",
+          "maxLength": 100
+        },
+        "vehicleBrand": {
+          "type": "string",
+          "description": "Marca do veículo",
+          "maxLength": 60
+        },
+        "year": {
+          "type": "number",
+          "description": "Ano do veículo"
+        },
+        "color": {
+          "type": "string",
+          "description": "Cor do veículo",
+          "maxLength": 40
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL da foto do veículo",
+          "maxLength": 500
+        },
+        "ownerName": {
+          "type": "string",
+          "description": "Nome do cliente",
+          "maxLength": 100
+        },
+        "ownerPhone": {
+          "type": "string",
+          "description": "Telefone de contato do cliente",
+          "maxLength": 40
+        },
+        "entryDate": {
+          "type": "string",
+          "description": "Data de entrada",
+          "maxLength": 60
+        },
+        "estimatedCompletion": {
+          "type": "string",
+          "description": "Previsão de conclusão",
+          "maxLength": 60
+        },
+        "serviceRequested": {
+          "type": "string",
+          "description": "Serviço solicitado",
+          "maxLength": 200
+        },
+        "currentStage": {
+          "type": "string",
+          "description": "Etapa atual da manutenção",
+          "enum": ["checkin", "desmontagem", "retifica", "montagem", "execucao", "pronto"]
+        },
+        "stageProgressPercent": {
+          "type": "number",
+          "description": "Percentual de progresso (0-100)"
+        },
+        "totalEstimate": {
+          "type": "number",
+          "description": "Valor total estimado da OS em reais"
+        },
+        "isEngineTeardownJob": {
+          "type": "boolean",
+          "description": "Se é trabalho de bancada/motor"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Data e hora de criação no banco",
+          "maxLength": 40
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Data e hora de atualização",
+          "maxLength": 40
+        }
+      },
+      "required": [
+        "id",
+        "plate",
+        "vehicleModel",
+        "ownerName",
+        "serviceRequested",
+        "currentStage"
+      ]
+    },
+    "AdminProfile": {
+      "title": "AdminProfile",
+      "description": "Registro de administrador da oficina",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "E-mail do administrador",
+          "maxLength": 120
+        },
+        "role": {
+          "type": "string",
+          "description": "Função administrativa",
+          "enum": ["admin", "superadmin"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Data de criação",
+          "maxLength": 40
+        }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/vehicles/{orderId}": {
+      "schema": "VehicleOrder",
+      "description": "Coleção principal de ordens de serviço e veículos no pátio"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminProfile",
+      "description": "Coleção de permissões administrativas da oficina"
+    }
+  }
+}

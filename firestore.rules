@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Default Deny Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email in ['adiliodias76@gmail.com', 'jomanocentroautomotivo@gmail.com'] ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidVehicle(data) {
+      return data.keys().hasAll(['id', 'plate', 'vehicleModel', 'ownerName', 'serviceRequested', 'currentStage'])
+        && data.id is string && data.id.size() <= 64
+        && data.plate is string && data.plate.size() <= 16
+        && data.vehicleModel is string && data.vehicleModel.size() <= 100
+        && data.ownerName is string && data.ownerName.size() <= 100
+        && data.serviceRequested is string && data.serviceRequested.size() <= 200
+        && data.currentStage in ['checkin', 'desmontagem', 'retifica', 'montagem', 'execucao', 'pronto'];
+    }
+
+    // Vehicles & Service Orders collection
+    match /vehicles/{orderId} {
+      allow read: if true;
+      allow create: if isValidId(orderId) && isValidVehicle(request.resource.data);
+      allow update: if isValidId(orderId) && isValidVehicle(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Admins collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}
