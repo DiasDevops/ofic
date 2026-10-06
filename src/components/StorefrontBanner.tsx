@@ -22,23 +22,23 @@ export const StorefrontBanner: React.FC<StorefrontBannerProps> = ({
   onScheduleService,
 }) => {
   return (
-    <section className="relative overflow-hidden rounded-3xl border-2 border-blue-600/30 bg-white shadow-xl">
+    <section className="relative overflow-hidden rounded-3xl border-2 border-blue-600/30 bg-white shadow-xl max-w-full">
       {/* Top Facade Style Strip */}
-      <div className="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 px-4 py-2.5 text-white">
-        <div className="mx-auto flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm font-extrabold tracking-wider uppercase">
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-yellow-400 animate-ping" />
-            <span className="text-yellow-300">Pátio Oficial Jomano</span>
-            <span className="text-blue-200">|</span>
-            <span className="tracking-widest">
+      <div className="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 px-3 sm:px-4 py-2 sm:py-2.5 text-white">
+        <div className="mx-auto flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm font-extrabold tracking-wider uppercase">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <span className="h-2 w-2 rounded-full bg-yellow-400 animate-ping shrink-0" />
+            <span className="text-yellow-300 whitespace-nowrap">Pátio Oficial Jomano</span>
+            <span className="text-blue-200 hidden sm:inline">|</span>
+            <span className="text-[10px] sm:text-xs text-blue-100 font-bold tracking-normal sm:tracking-widest break-words">
               SUSPENSÃO • FREIO • MECÂNICA • BALANCEAMENTO • ALINHAMENTO
             </span>
           </div>
 
-          <div className="flex items-center gap-3 text-xs">
-            <span className="flex items-center gap-1 text-yellow-300 font-black">
-              <MapPin className="h-3.5 w-3.5" />
-              {SHOP_CONTACT_INFO.address} — {SHOP_CONTACT_INFO.locationShort}
+          <div className="flex items-center gap-2 text-[11px] sm:text-xs">
+            <span className="flex items-center gap-1 text-yellow-300 font-black truncate">
+              <MapPin className="h-3.5 w-3.5 shrink-0" />
+              <span>{SHOP_CONTACT_INFO.address}</span>
             </span>
           </div>
         </div>

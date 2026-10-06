@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+  }
+
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
@@ -9,3 +15,4 @@
 .font-heading {
   font-family: 'Chakra Petch', 'Plus Jakarta Sans', sans-serif;
 }
+

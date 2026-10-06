@@ -334,7 +334,7 @@ export default function App() {
   const currentVehicleObj = vehicles.find((v) => v.id === selectedVehicleId) || vehicles[0];
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans selection:bg-red-600 selection:text-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-white text-slate-900 flex flex-col font-sans selection:bg-red-600 selection:text-white">
       {/* Google Maps Quota Reached Notification (Case A Demo Key) */}
       {isMapsQuotaExceeded && (
         <div className="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2.5 text-xs md:text-sm text-center sticky top-0 z-50 shadow-sm">
@@ -374,7 +374,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-14 flex-1">
+      <main className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-10 sm:space-y-14 flex-1 overflow-x-hidden">
         {activeSection === 'admin' ? (
           <AdminPanel
             vehicles={vehicles}
@@ -505,6 +505,8 @@ export default function App() {
           setIsQuickSupportOpen(true);
         }}
         onOpenBooking={() => handleOpenBookingWithPromo()}
+        onNavigateToAdmin={() => handleNavigate('admin')}
+        isShopMode={isShopMode || isAdminLoggedIn}
       />
     </div>
   );

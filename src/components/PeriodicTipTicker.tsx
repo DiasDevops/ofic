@@ -29,17 +29,17 @@ export const PeriodicTipTicker: React.FC<PeriodicTipTickerProps> = ({ onScrollTo
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-6 left-6 z-40">
+      <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 max-w-[calc(100vw-2rem)]">
         <button
           onClick={() => setIsMinimized(false)}
-          className="flex items-center gap-2 rounded-2xl border-2 border-amber-400 bg-white px-3.5 py-2.5 shadow-xl shadow-amber-500/20 hover:scale-105 transition-all text-xs font-black text-slate-900"
+          className="flex items-center gap-2 rounded-2xl border-2 border-amber-400 bg-white px-3 py-2 sm:px-3.5 sm:py-2.5 shadow-xl shadow-amber-500/20 hover:scale-105 transition-all text-xs font-black text-slate-900 truncate"
         >
-          <span className="relative flex h-3 w-3">
+          <span className="relative flex h-3 w-3 shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
           </span>
-          <Lightbulb className="h-4 w-4 text-amber-500" />
-          <span>Dica Jomano: {tip.categoryLabel}</span>
+          <Lightbulb className="h-4 w-4 text-amber-500 shrink-0" />
+          <span className="truncate">Dica Jomano: {tip.categoryLabel}</span>
         </button>
       </div>
     );
@@ -49,7 +49,7 @@ export const PeriodicTipTicker: React.FC<PeriodicTipTickerProps> = ({ onScrollTo
     <div
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="fixed bottom-6 left-6 z-40 max-w-sm sm:max-w-md w-[calc(100vw-3rem)] rounded-2xl border-3 border-amber-400 bg-white p-4 shadow-2xl shadow-slate-900/15 transition-all duration-300 animate-in slide-in-from-bottom-5"
+      className="fixed bottom-4 left-4 right-4 sm:right-auto sm:left-6 z-40 max-w-sm sm:max-w-md rounded-2xl border-3 border-amber-400 bg-white p-3.5 sm:p-4 shadow-2xl shadow-slate-900/15 transition-all duration-300 animate-in slide-in-from-bottom-5"
     >
       {/* Top Bar */}
       <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2 mb-2.5">

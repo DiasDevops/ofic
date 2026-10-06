@@ -45,20 +45,20 @@ export const Header: React.FC<HeaderProps> = ({
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const navLinks = [
-    { id: 'promos', label: 'Promoções do Pátio', shortLabel: 'Promoções' },
-    { id: 'tips', label: 'Dicas Preventivas', shortLabel: 'Dicas' },
-    { id: 'tracker', label: 'Rastrear Veículo (Ao Vivo)', shortLabel: 'Rastreamento' },
-    { id: 'engine-bench', label: 'Motor na Bancada', shortLabel: 'Motor Bancada' },
-    { id: 'services', label: 'Serviços & Pneus', shortLabel: 'Serviços' },
-    { id: 'history', label: 'Histórico de Reparos', shortLabel: 'Histórico' },
-    { id: 'map', label: 'Como Chegar (Mapa)', shortLabel: 'Mapa' },
+    { id: 'promos', label: 'Promoções' },
+    { id: 'tracker', label: 'Rastrear Veículo' },
+    { id: 'engine-bench', label: 'Motor na Bancada' },
+    { id: 'services', label: 'Serviços' },
+    { id: 'map', label: 'Como Chegar' },
+    { id: 'tips', label: 'Dicas' },
+    { id: 'history', label: 'Histórico' },
   ];
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-sm">
       {/* Top micro-bar with location RJ 21210-000, WhatsApp and Landline */}
       <div className="border-b border-blue-100 bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 px-3 sm:px-4 py-1.5 text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between text-xs font-semibold gap-2">
+        <div className="mx-auto flex max-w-7xl items-center justify-between text-xs font-semibold gap-2 overflow-hidden">
           <div className="flex items-center gap-2 sm:gap-6 min-w-0">
             <span className="flex items-center gap-1.5 text-yellow-300 font-extrabold truncate">
               <MapPin className="h-3.5 w-3.5 text-yellow-300 shrink-0" />
@@ -105,7 +105,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Main navigation bar */}
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 gap-2 sm:gap-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 sm:px-6 py-2 sm:py-2.5 gap-2 sm:gap-4">
         {/* Brand identity with official red badge */}
         <div 
           onClick={() => onNavigate('promos')} 
@@ -114,38 +114,37 @@ export const Header: React.FC<HeaderProps> = ({
           <JomanoLogo size="md" />
         </div>
 
-        {/* Desktop Nav Items */}
-        <nav className="hidden xl:flex items-center gap-1 shrink min-w-0">
+        {/* Desktop Nav Items - Clean, proportional and anti-overlap */}
+        <nav className="hidden xl:flex items-center gap-1 2xl:gap-1.5 shrink min-w-0">
           {navLinks.map((link) => (
             <button
               key={link.id}
               id={`nav-${link.id}`}
               onClick={() => onNavigate(link.id)}
-              className={`px-2.5 2xl:px-3.5 py-1.5 2xl:py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+              className={`px-2.5 2xl:px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 activeSection === link.id
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
                   : 'text-slate-700 hover:bg-slate-100 hover:text-blue-700'
               }`}
             >
-              <span className="xl:hidden 2xl:inline">{link.label}</span>
-              <span className="hidden xl:inline 2xl:hidden">{link.shortLabel}</span>
+              <span>{link.label}</span>
             </button>
           ))}
         </nav>
 
         {/* Action Controls (Notifications, Quick Support, Booking) */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Notification bell dropdown toggle */}
           <div className="relative">
             <button
               id="notifications-toggle-btn"
               onClick={() => setShowNotifications(!showNotifications)}
               title="Notificações Automáticas de Manutenção"
-              className="relative rounded-xl border border-slate-200 bg-slate-50 p-2 sm:p-2.5 text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-all shrink-0"
+              className="relative rounded-xl border border-slate-200 bg-slate-50 p-1.5 sm:p-2 text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-all shrink-0"
             >
-              <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
+              <Bell className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-red-600 text-[9px] sm:text-[10px] font-black text-white ring-2 ring-white animate-pulse">
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[9px] font-black text-white ring-2 ring-white animate-pulse">
                   {unreadCount}
                 </span>
               )}
@@ -225,40 +224,21 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* Admin / Oficina Mode Shortcut */}
-          <button
-            id="header-admin-btn"
-            onClick={() => onNavigate('admin')}
-            title="Área do Administrador • Modo Oficina"
-            className={`flex items-center gap-1.5 rounded-xl px-2.5 sm:px-3 py-2 text-xs font-black transition-all shrink-0 whitespace-nowrap active:scale-95 ${
-              activeSection === 'admin'
-                ? 'bg-amber-500 text-slate-950 ring-2 ring-amber-400 shadow-md'
-                : isShopMode
-                ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200'
-                : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-            }`}
-          >
-            <Building2 className={`h-3.5 w-3.5 shrink-0 ${isShopMode || activeSection === 'admin' ? 'text-amber-950' : 'text-slate-600'}`} />
-            <span className="hidden sm:inline">{isShopMode ? 'Modo Oficina' : 'Oficina'}</span>
-            <span className="sm:hidden">{isShopMode ? 'Admin' : 'Loja'}</span>
-          </button>
-
           {/* Quick Support Button (Red Theme) */}
           <button
             id="quick-support-header-btn"
             onClick={onOpenQuickSupport}
-            className="flex items-center gap-1.5 rounded-xl bg-red-600 px-2.5 sm:px-3.5 py-2 text-xs font-extrabold text-white shadow-md shadow-red-600/20 hover:bg-red-700 active:scale-95 transition-all shrink-0 whitespace-nowrap"
+            className="hidden sm:flex items-center gap-1.5 rounded-xl bg-red-600 px-2.5 sm:px-3 py-1.5 text-xs font-extrabold text-white shadow-md shadow-red-600/20 hover:bg-red-700 active:scale-95 transition-all shrink-0 whitespace-nowrap"
           >
-            <MessageSquare className="h-4 w-4 shrink-0" />
-            <span className="hidden sm:inline 2xl:inline">Suporte<span className="hidden 2xl:inline"> Rápido</span></span>
-            <span className="sm:hidden">Ajuda</span>
+            <MessageSquare className="h-3.5 w-3.5 shrink-0" />
+            <span>Suporte</span>
           </button>
 
           {/* Agendar Horário CTA (Vivid Amber/Gold) */}
           <button
             id="header-booking-btn"
             onClick={onOpenBooking}
-            className="flex items-center gap-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 px-2.5 sm:px-3.5 py-2 text-xs font-black text-slate-950 shadow-md shadow-yellow-500/20 active:scale-95 transition-all shrink-0 whitespace-nowrap"
+            className="flex items-center gap-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-xs font-black text-slate-950 shadow-md shadow-yellow-500/20 active:scale-95 transition-all shrink-0 whitespace-nowrap"
           >
             <Calendar className="h-3.5 w-3.5 shrink-0 hidden sm:inline" />
             <span>Agendar<span className="hidden sm:inline"> Horário</span></span>
@@ -267,7 +247,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile menu hamburger toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="rounded-xl border border-slate-200 bg-slate-50 p-2 text-slate-700 hover:bg-slate-100 xl:hidden shrink-0"
+            className="rounded-xl border border-slate-200 bg-slate-50 p-1.5 sm:p-2 text-slate-700 hover:bg-slate-100 xl:hidden shrink-0"
             id="mobile-menu-toggle-btn"
             aria-label="Menu principal"
           >
@@ -278,7 +258,36 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="xl:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-2 shadow-lg">
+        <div className="xl:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-2.5 shadow-lg max-w-full overflow-hidden">
+          {/* Quick Action Shortcuts inside Mobile Menu */}
+          <div className="grid grid-cols-2 gap-2 pb-2 border-b border-slate-100">
+            <button
+              onClick={() => {
+                onNavigate('admin');
+                setMobileMenuOpen(false);
+              }}
+              className={`p-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 ${
+                activeSection === 'admin'
+                  ? 'bg-amber-500 text-slate-950'
+                  : 'bg-amber-50 text-amber-900 border border-amber-200'
+              }`}
+            >
+              <Building2 className="h-4 w-4" />
+              <span>Modo Oficina</span>
+            </button>
+
+            <button
+              onClick={() => {
+                onOpenQuickSupport();
+                setMobileMenuOpen(false);
+              }}
+              className="p-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 bg-red-50 text-red-700 border border-red-200"
+            >
+              <MessageSquare className="h-4 w-4 text-red-600" />
+              <span>Suporte Rápido</span>
+            </button>
+          </div>
+
           {navLinks.map((link) => (
             <button
               key={link.id}
@@ -295,20 +304,7 @@ export const Header: React.FC<HeaderProps> = ({
               {link.label}
             </button>
           ))}
-          <button
-            onClick={() => {
-              onNavigate('admin');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 ${
-              activeSection === 'admin'
-                ? 'bg-amber-500 text-slate-950 font-black'
-                : 'text-amber-900 bg-amber-50 border border-amber-200 hover:bg-amber-100'
-            }`}
-          >
-            <Building2 className="h-4 w-4" />
-            <span>Painel do Administrador (Modo Oficina)</span>
-          </button>
+
           <div className="pt-3 border-t border-slate-200 space-y-2 text-xs">
             <a
               href={`https://wa.me/${SHOP_CONTACT_INFO.whatsappRaw}`}

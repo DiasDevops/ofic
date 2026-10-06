@@ -28,36 +28,36 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onScrollToPromos,
 }) => {
   return (
-    <section className="relative overflow-hidden rounded-3xl border-2 border-slate-200 bg-white p-6 sm:p-10 lg:p-12 shadow-xl hover:shadow-2xl transition-all">
+    <section className="relative overflow-hidden rounded-3xl border-2 border-slate-200 bg-white p-4 sm:p-8 lg:p-12 shadow-xl hover:shadow-2xl transition-all max-w-full">
       {/* Top vivid motorsport racing gradient strip */}
-      <div className="h-2.5 -mx-6 -mt-6 sm:-mx-10 sm:-mt-10 lg:-mx-12 lg:-mt-12 mb-6 sm:mb-8 bg-gradient-to-r from-red-600 via-yellow-400 via-blue-600 to-emerald-500" />
+      <div className="h-2.5 -mx-4 -mt-4 sm:-mx-8 sm:-mt-8 lg:-mx-12 lg:-mt-12 mb-5 sm:mb-8 bg-gradient-to-r from-red-600 via-yellow-400 via-blue-600 to-emerald-500" />
 
       {/* Background soft energetic automotive radial gradient */}
       <div className="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-blue-100/70 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-red-100/60 blur-3xl" />
 
-      <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+      <div className="relative z-10 max-w-4xl mx-auto text-center space-y-5 sm:space-y-6">
         {/* Top Badges */}
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-red-700 shadow-xs">
+          <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-red-700 shadow-xs">
             <span className="h-2 w-2 rounded-full bg-red-600 animate-pulse" />
             <span>Centro Automotivo & Auto Serviço</span>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-blue-700">
-            <MapPin className="h-3.5 w-3.5 text-blue-600" />
-            <span>{SHOP_CONTACT_INFO.address} • {SHOP_CONTACT_INFO.locationShort}</span>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-blue-700 max-w-full truncate">
+            <MapPin className="h-3.5 w-3.5 text-blue-600 shrink-0" />
+            <span className="truncate">{SHOP_CONTACT_INFO.address} • {SHOP_CONTACT_INFO.locationShort}</span>
           </div>
         </div>
 
         {/* Big Bright Title */}
-        <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-tight">
+        <h1 className="font-heading text-2xl sm:text-4xl lg:text-6xl font-black tracking-tight text-slate-900 leading-tight">
           Jomano Centro Automotivo & Auto Serviço
         </h1>
 
         {/* Subtitle with key specialties */}
-        <div className="inline-block rounded-xl bg-slate-100 px-4 py-2 border border-slate-200">
-          <p className="font-heading text-xs sm:text-sm font-black uppercase tracking-widest text-slate-800">
+        <div className="inline-block rounded-xl bg-slate-100 px-3 py-1.5 sm:px-4 sm:py-2 border border-slate-200 max-w-full">
+          <p className="font-heading text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-normal sm:tracking-widest text-slate-800 break-words">
             SUSPENSÃO • FREIO • MECÂNICA • BALANCEAMENTO • ALINHAMENTO • RETÍFICA
           </p>
         </div>
@@ -133,7 +133,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
 
         {/* Quick Highlights Bar with Vivid Daylight Styling */}
-        <div className="pt-6 border-t border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
+        <div className="pt-6 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-left">
           <div className="p-3.5 rounded-2xl bg-blue-50/70 border-2 border-blue-200 hover:border-blue-500 shadow-xs hover:shadow-md transition-all">
             <span className="font-heading text-xl font-black text-blue-700 block">R$ 140,00</span>
             <span className="text-[11px] font-bold text-slate-700">Alinhamento e Balanceamentos (Roda Ferro)</span>

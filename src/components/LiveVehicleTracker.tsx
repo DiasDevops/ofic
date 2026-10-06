@@ -137,7 +137,7 @@ export const LiveVehicleTracker: React.FC<LiveVehicleTrackerProps> = ({
       </div>
 
       {/* Vehicles selection pills */}
-      <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin">
+      <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin w-full max-w-full">
         <span className="text-xs font-bold text-slate-500 shrink-0">Ordens de Serviço:</span>
         {filteredVehicles.map((vehicle) => {
           const isSelected = vehicle.id === currentVehicle.id;

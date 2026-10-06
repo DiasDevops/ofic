@@ -12,15 +12,15 @@ export const JomanoLogo: React.FC<JomanoLogoProps> = ({
   showSubtitle = true,
 }) => {
   const iconSizes = {
-    sm: 'h-8 w-8 sm:h-9 sm:w-9',
-    md: 'h-9 w-9 sm:h-11 sm:w-11',
-    lg: 'h-12 w-12 sm:h-14 sm:w-14',
+    sm: 'h-7 w-7 sm:h-8 sm:w-8',
+    md: 'h-8 w-8 sm:h-10 sm:w-10 lg:h-11 lg:w-11',
+    lg: 'h-11 w-11 sm:h-14 sm:w-14',
   };
 
   const titleSizes = {
-    sm: 'text-base sm:text-lg',
-    md: 'text-lg sm:text-xl xl:text-2xl',
-    lg: 'text-2xl sm:text-3xl',
+    sm: 'text-sm sm:text-base',
+    md: 'text-base sm:text-lg lg:text-xl xl:text-2xl',
+    lg: 'text-xl sm:text-3xl',
   };
 
   return (

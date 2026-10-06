@@ -314,7 +314,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
 
           {/* Vehicle Selector Pills */}
-          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin">
+          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin w-full max-w-full">
             {filteredVehicles.map((vehicle) => {
               const isSelected = vehicle.id === currentVehicle?.id;
               return (

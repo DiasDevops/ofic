@@ -10,7 +10,8 @@ import {
   ShieldCheck, 
   ExternalLink,
   Disc,
-  Droplet
+  Droplet,
+  Building2
 } from 'lucide-react';
 import { SHOP_CONTACT_INFO } from '../data/mockData';
 import { JomanoLogo } from './JomanoLogo';
@@ -18,11 +19,15 @@ import { JomanoLogo } from './JomanoLogo';
 interface FooterProps {
   onOpenQuickSupport: () => void;
   onOpenBooking: () => void;
+  onNavigateToAdmin?: () => void;
+  isShopMode?: boolean;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onOpenQuickSupport,
   onOpenBooking,
+  onNavigateToAdmin,
+  isShopMode = false,
 }) => {
   return (
     <footer className="mt-16 border-t-2 border-slate-200 bg-white text-slate-700">
@@ -201,6 +206,37 @@ export const Footer: React.FC<FooterProps> = ({
               </a>
             </div>
           </div>
+        </div>
+
+        {/* Acesso Restrito: Modo Oficina / Painel do Administrador */}
+        <div className="mt-12 rounded-3xl border-2 border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-100/70 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-center gap-3.5 text-center sm:text-left">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-slate-950 font-black shadow-md ring-2 ring-amber-400/40">
+              <Building2 className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 justify-center sm:justify-start">
+                <span className="font-heading font-black text-slate-900 text-base">
+                  Painel do Administrador • Modo Oficina
+                </span>
+                <span className="rounded-md bg-amber-200 border border-amber-400 px-2 py-0.5 text-[10px] font-black text-amber-950 uppercase tracking-wider">
+                  Área Restrita
+                </span>
+              </div>
+              <p className="text-xs text-slate-600 font-medium mt-1">
+                Controle interno de Ordens de Serviço, visualização completa de telefones e placas, espelho da OS e banco na nuvem.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={onNavigateToAdmin}
+            id="footer-admin-btn"
+            className="shrink-0 inline-flex items-center gap-2 rounded-2xl bg-amber-500 hover:bg-amber-400 px-6 py-3 text-xs font-black text-slate-950 shadow-md shadow-amber-500/20 active:scale-95 transition-all cursor-pointer"
+          >
+            <Building2 className="h-4 w-4" />
+            <span>{isShopMode ? 'Acessar Painel (Conectado)' : 'Entrar no Modo Oficina'}</span>
+          </button>
         </div>
 
         {/* Bottom copyright line */}
